@@ -1,0 +1,27 @@
+[
+    {
+        "id": "1",
+        "title": "Simba Sports Club Official WhatsApp Channel",
+        "alias": "simba_otc"
+    },
+    {
+        "id": "2",
+        "title": "Simba Sports Club WhatsApp Group Chat",
+        "alias": "simba_otg"
+    },
+    {
+        "id": "3",
+        "title": "Young Africans - Official WhatsApp Channel",
+        "alias": "yanga_otc"
+    },
+    {
+        "id": "4",
+        "title": "Young Africans - WhatsApp Group Chat",
+        "alias": "yanga_otg"
+    },
+    {
+        "id": "5",
+        "title": "Group la Simba na Yanga (Watani) - WhatsApp",
+        "alias": "simba_yanga"
+    }
+]

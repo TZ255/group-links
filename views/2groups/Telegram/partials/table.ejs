@@ -1,0 +1,50 @@
+<table class="table table-striped caption-top table-light table-bordered" id="ngono">
+    <caption>Magroup ya Ngono Telegram Tanzania</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of ngono_tg ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.name %></td>
+            <td class="link">
+                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                    JOIN
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<br><br><br>
+
+<table class="table table-striped caption-top table-light table-bordered" id="malaya">
+    <caption>Magroup ya Malaya Telegram Tanzania</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of malaya_tg ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.name %></td>
+            <td class="link">
+                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                    JOIN
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>

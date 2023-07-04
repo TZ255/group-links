@@ -1,0 +1,27 @@
+[
+    {
+        "id": "1",
+        "title": "Simba Sports Club Official Telegram Channel",
+        "alias": "simba_otc"
+    },
+    {
+        "id": "2",
+        "title": "Simba Sports Club Telegram Group Chat",
+        "alias": "simba_otg"
+    },
+    {
+        "id": "3",
+        "title": "Young Africans - Official Telegram Channel",
+        "alias": "yanga_otc"
+    },
+    {
+        "id": "4",
+        "title": "Young Africans - Telegram Group Chat",
+        "alias": "yanga_otg"
+    },
+    {
+        "id": "5",
+        "title": "Group la Simba na Yanga (Watani) - Telegram",
+        "alias": "simba_yanga"
+    }
+]

@@ -1,0 +1,50 @@
+<table class="table table-striped caption-top table-light table-bordered" id="telegram">
+    <caption>Magroup ya Simba na Yanga Telegram</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of michezo_tg ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.title %></td>
+            <td class="link">
+                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                    JOIN
+                    <i class="fa-brands fa-telegram"></i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<br><br><br>
+
+<table class="table table-striped caption-top table-light table-bordered" id="whatsapp">
+    <caption>Magroup ya Simba na Yanga WhatsApp</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of michezo_tsap ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.title %></td>
+            <td class="link">
+                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                    JOIN
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>

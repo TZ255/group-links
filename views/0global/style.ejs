@@ -1,0 +1,87 @@
+<style>
+    :root {
+        --dark: #282828;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        background-color: var(--dark);
+        color: white;
+    }
+
+    main {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    main .right {
+        width: 67%;
+        background-color: black;
+        padding: 32px 8px 16px 24px;
+    }
+
+    main .left {
+        width: 30%;
+        background-color: black;
+        margin: 12px 12px 12px 0;
+        padding: 24px 12px;
+        border-radius: 24px;
+    }
+
+    main .left ul {
+        list-style: none;
+        font-size: 24px;
+    }
+
+    main .left li {
+        border-left: 12px solid white;
+        padding-left: 12px;
+        margin: 12px auto;
+    }
+
+    main .left li:hover,
+    main .left li:active {
+        border-left: 12px solid gold;
+    }
+
+    main .left ul li a {
+        text-decoration: none;
+        color: gold;
+        display: block;
+    }
+
+    main .left ul li a:hover,
+    main .left ul li a:active {
+        color: white;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 620px) {
+        main {
+            flex-direction: column;
+        }
+
+        main .right,
+        main .left {
+            width: 95%;
+            margin: 24px auto;
+        }
+
+        main .left {
+            margin: 12px auto;
+        }
+    }
+
+    footer {
+        text-align: center;
+        background-color: black;
+        padding: 92px 12px 24px 12px;
+        border-top: 4px solid var(--dark);
+    }
+</style>
