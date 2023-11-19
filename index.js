@@ -6,6 +6,7 @@ const app = express()
 
 const getRoutes = require('./routes/get')
 const bots = require('./bots/bot')
+const gbots = require('./gbots/bot')
 
 
 // database connection
@@ -25,6 +26,7 @@ app.set('trust proxy', true)
 app.use(getRoutes)
 if (process.env.ENVIRONMENT == 'production') {
     bots.myBotsFn()
+    gbots.globalBots(app)
 }
 
 app.listen(process.env.PORT || 3000, () => console.log('Listen to port 3000'))
