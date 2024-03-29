@@ -85,8 +85,6 @@ const myBotsFn = async (app) => {
                 }
             })
             bot.launch().catch(e => console.log(e.message, e))
-            process.once('SIGINT', () => bot.stop('SIGINT'))
-            process.once('SIGTERM', () => bot.stop('SIGTERM'))
         }
     } catch (err) {
         console.log(err.message, err)

@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for magroup-links on 2023-07-04T17:53:43+03:00
+# fly.toml app configuration file generated for magroup-links on 2024-01-13T06:36:28+03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -6,12 +6,19 @@
 app = "magroup-links"
 primary_region = "jnb"
 
+[build]
+
 [env]
   PORT = "8080"
 
 [http_service]
-  internal_port = 8080
+  internal_port = 3000
   force_https = true
   auto_stop_machines = false
   auto_start_machines = true
   min_machines_running = 0
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256

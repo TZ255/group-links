@@ -13,10 +13,10 @@
             <th scope="row"><%= g.id %></th>
             <td><%= g.name %></td>
             <td class="link">
-                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                <span class="ch-link" onclick="window.open('/tg/join/channel/<%= g.alias %>')">
                     JOIN
                     <i class="fa-brands fa-whatsapp"></i>
-                </a>
+                </span>
             </td>
         </tr>
         <% } %>
@@ -39,10 +39,10 @@
             <th scope="row"><%= g.id %></th>
             <td><%= g.name %></td>
             <td class="link">
-                <a href="/tg/join/channel/<%= g.alias %>" target="_blank" rel="noopener noreferrer">
+                <span class="ch-link" onclick="window.open('/tg/join/channel/<%= g.alias %>')">
                     JOIN
                     <i class="fa-brands fa-whatsapp"></i>
-                </a>
+                </span>
             </td>
         </tr>
         <% } %>
