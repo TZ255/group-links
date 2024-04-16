@@ -5,8 +5,13 @@ const mongoose = require('mongoose')
 const app = express()
 
 const getRoutes = require('./routes/get')
+
+//Attached robots
 const bots = require('./bots/bot')
 const gbots = require('./gbots/bot')
+const ARRbot = require('./other-robots/1-arrbot/bot')
+const PBRbot = require('./other-robots/2-pbrbot/bot')
+const DYDXbot = require('./other-robots/3-dydxbot/bot')
 
 
 // database connection
@@ -27,6 +32,8 @@ app.use(getRoutes)
 if (process.env.ENVIRONMENT == 'production') {
     bots.myBotsFn()
     gbots.globalBots(app)
+    ARRbot.ARRBotFunction()
+    PBRbot.PBRBotFunction()
 }
-
+DYDXbot.DYDXBotFunction()
 app.listen(process.env.PORT || 3000, () => console.log('Listen to port 3000'))
