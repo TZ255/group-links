@@ -31,4 +31,5 @@ if (process.env.ENVIRONMENT == 'production') {
     //gbots.globalBots(app) these bots moved to vyuo-degree app
 }
 
+//default port 8080
 app.listen(process.env.PORT || 3000, () => console.log('Listen to port 3000'))

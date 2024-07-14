@@ -50,6 +50,7 @@ router.get('/connection/:msanii', async (req, res) => {
         let msanii = req.params.msanii
         let aslay_db = require('../jsons/connection/aslay.json')
         let haji_db = require('../jsons/connection/haji.json')
+        let uwoya_db = require('../jsons/connection/uwoya.json')
 
         switch (msanii) {
             case 'aslay':
@@ -57,6 +58,9 @@ router.get('/connection/:msanii', async (req, res) => {
                 break;
             case 'manara':
                 res.render('3connections/Haji/haji', { haji_db })
+                break;
+            case 'uwoya':
+                res.render('3connections/Uwoya/uwoya', { uwoya_db })
                 break;
 
             default:
@@ -76,7 +80,7 @@ router.get('/tg/join/channel/:alias', async (req, res) => {
     }
 })
 
-router.all('/*', (req, res) => {
+router.get('/*', (req, res) => {
     res.status(401).send(`Link hii haipo. Rudi kwenye tovuti kuu kwa kubonyeza <a href="/">HAPA</a>`)
 })
 
