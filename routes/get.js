@@ -80,7 +80,7 @@ router.get('/tg/join/channel/:alias', async (req, res) => {
     }
 })
 
-router.get('/*', (req, res) => {
+router.get('*', (req, res) => {
     res.status(401).send(`Link hii haipo. Rudi kwenye tovuti kuu kwa kubonyeza <a href="/">HAPA</a>`)
 })
 

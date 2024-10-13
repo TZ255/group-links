@@ -7,8 +7,8 @@ const app = express()
 const getRoutes = require('./routes/get')
 
 //Attached robots
-const bots = require('./bots/bot')
-const gbots = require('./gbots/bot')
+const bots = require('./bots/1-Jumbe/bot')
+const DramaStoreBot = require('./bots/2-Dramastore/bot')
 
 
 // database connection
@@ -25,11 +25,12 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.set('trust proxy', true)
-app.use(getRoutes)
 if (process.env.ENVIRONMENT == 'production') {
+    DramaStoreBot.DramaStoreBot(app)
     bots.myBotsFn()
-    //gbots.globalBots(app) these bots moved to vyuo-degree app
 }
+
+app.use(getRoutes)
 
 //default port 8080
 app.listen(process.env.PORT || 3000, () => console.log('Listen to port 3000'))

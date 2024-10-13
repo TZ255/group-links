@@ -1,16 +1,14 @@
 const { Telegraf } = require('telegraf')
-const usersModel = require('./database/users')
-const listModel = require('./database/botlist')
-
-//delaying
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const usersModel = require('../../database/users')
+const listModel = require('../../database/botlist')
+const jumbe = require('../../database/sms.json')
 
 const imp = {
-    halot: 1473393723
+    shemdoe2: 6638791469
 }
 
 
-const myBotsFn = async (app) => {
+const myBotsFn = async () => {
     try {
         const tokens = await listModel.find()
 
@@ -19,6 +17,7 @@ const myBotsFn = async (app) => {
 
             bot.catch(async (e, ctx) => {
                 console.log(e)
+                await bot.telegram.sendMessage(imp.shemdoe2, e.message)
             })
 
             bot.start(async ctx => {
@@ -29,21 +28,34 @@ const myBotsFn = async (app) => {
                     let user = await usersModel.findOne({ chatid })
                     if (!user) {
                         let tk = await listModel.findOne({ botname })
-                        await usersModel.create({ chatid, first_name, botname, token: tk.token })
+                        await usersModel.create({ chatid, first_name, botname, token: tk })
+                        await bot.telegram.sendMessage(imp.shemdoe2, `${first_name} added to db via ${botname}`)
                     }
-                    let url = `https://playabledownload.com/1584699`
-                    await ctx.reply(`Hello <b>${first_name}!</b>\n\nWelcome to our platform. Unlock the largest library of adult videos and leaked sex tapes as well as our private group for escorts and hookups.\n\nBelow, prove your are not a robot to unlock the group invite link.`, {
+                    await ctx.reply(`Hello <b>${first_name}!</b>\n\nKaribu. Kupata jumbe tamu za kutia moyo za maisha \nbonyeza hapa 👉 /ujumbe`, {
                         parse_mode: 'HTML',
                         reply_markup: {
-                            inline_keyboard: [
+                            keyboard: [
                                 [
-                                    { text: '🔓 UNLOCK INVITE LINK 🥵', url }
+                                    { text: '❤ PATA UJUMBE MTAMU' }
                                 ]
-                            ]
+                            ],
+                            is_persistent: true,
+                            resize_keyboard: true
                         }
                     })
                 } catch (e) {
                     console.log(e.message, e)
+                }
+            })
+
+            bot.command('ujumbe', async ctx => {
+                try {
+                    let rand = Math.floor(Math.random() * jumbe.length)
+                    await ctx.reply(`<i><b>${jumbe[rand]}</b></i>`, {
+                        parse_mode: 'HTML'
+                    })
+                } catch (err_ujumbe) {
+                    console.log(err_ujumbe.message)
                 }
             })
 
@@ -52,11 +64,11 @@ const myBotsFn = async (app) => {
                     let all = await usersModel.countDocuments()
                     let lists = await listModel.find()
 
-                    let txt = `Total Users Are ${all.toLocaleString('en-US')}\n\n`
+                    let txt = `Total Users are ${all.toLocaleString('en-US')}\n\n`
 
                     for (let [i, v] of lists.entries()) {
                         let num = (await usersModel.countDocuments({ botname: v.botname })).toLocaleString('en-US')
-                        txt = txt + `${i + 1}. @${v.botname} = ${num}\n\n`
+                        txt = txt + `${i + 1}. ${v.botname} = ${num}\n\n`
                     }
                     await ctx.reply(txt)
                 } catch (err) {
@@ -70,21 +82,32 @@ const myBotsFn = async (app) => {
                         let rpmsg = ctx.message.reply_to_message.text
                         let txt = ctx.message.text
 
-                        if (rpmsg.toLowerCase() == 'token') {
+                        if (rpmsg.toLowerCase() == 'token' && ctx.chat.id == imp.shemdoe2) {
                             let bt = await listModel.create({ token: txt, botname: 'unknown' })
                             await ctx.reply(`Token Added: 👉 ${bt.token} 👈\n\nReply with username of bot`)
-                        } else if (rpmsg.includes('Token Added:')) {
+                        } else if (rpmsg.includes('Token Added') && ctx.chat.id == imp.shemdoe2) {
                             let token = rpmsg.split('👉 ')[1].split(' 👈')[0].trim()
                             let bt = await listModel.findOneAndUpdate({ token }, { $set: { botname: txt } }, { new: true })
                             let final = `New Bot with the following info added successfully:\n\n✨ Botname: ${bt.botname}\n✨ Token: ${bt.token}`
                             await ctx.reply(final)
                         }
+                    } else {
+                        if (ctx.message.text == '❤ PATA UJUMBE MTAMU') {
+                            let rand = Math.floor(Math.random() * jumbe.length)
+                            await ctx.reply(`<i><b>${jumbe[rand]}</b></i>`, {
+                                parse_mode: 'HTML'
+                            })
+                        }
                     }
                 } catch (err) {
-                    console.log(err.message, err)
+                    console.log(err.message)
                 }
             })
-            bot.launch().catch(e => console.log(e.message, e))
+
+            bot.launch().catch(async ee => {
+                await bot.telegram.sendMessage(imp.shemdoe2, ee.message)
+                console.log(ee.message)
+            })
         }
     } catch (err) {
         console.log(err.message, err)
@@ -93,5 +116,5 @@ const myBotsFn = async (app) => {
 
 
 module.exports = {
-    globalBots: myBotsFn
+    myBotsFn
 }

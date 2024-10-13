@@ -4,7 +4,7 @@
 #
 
 app = "magroup-links"
-primary_region = "jnb"
+primary_region = "hkg"
 
 [build]
 
@@ -20,5 +20,5 @@ primary_region = "jnb"
 
 [[vm]]
   cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 256
+  cpus = 2
+  memory_mb = 512
