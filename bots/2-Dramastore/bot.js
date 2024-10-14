@@ -49,7 +49,8 @@ const dt = {
     hwarang: -1001182807060,
     revenge: -1001863956613,
     link: process.env.BOT_LINK,
-    aliProducts: -1002494520726
+    aliProducts: -1002494520726,
+    matangazoDB: -1001570087172
 }
 
 
@@ -228,6 +229,42 @@ const DramaStoreBot = async (app) => {
 
         bot.command('all_time', async ctx => {
             TrendingAllTime(bot, ctx, dt)
+        })
+
+        const convoFn = async (ctx) => {
+            if ([dt.shd, dt.htlt].includes(ctx.chat.id) && ctx.match) {
+                let msg_id = Number(ctx.match.trim())
+                let bads = ['deactivated', 'blocked', 'initiate', 'chat not found']
+                try {
+                    let all_users = await usersModel.find()
+                    await ctx.reply(`Starting broadcasting for ${all_users.length} users`)
+
+                    all_users.forEach((u, i) => {
+                        setTimeout(() => {
+                            bot.api.copyMessage(u.userId, dt.matangazoDB, msg_id)
+                                .then(() => {
+                                    if (i === all_users.length - 1) {
+                                        ctx.reply('Nimemaliza conversation').catch(e => console.log(e.message))
+                                    }
+                                })
+                                .catch((err) => {
+                                    if (bads.some((b) => err?.message.toLowerCase().includes(b))) {
+                                        u.deleteOne()
+                                        console.log(`${u?.chatid} deleted`)
+                                    } else {
+                                        console.log(`🤷‍♂️ ${err.message}`)
+                                    }
+                                })
+                        }, i * 50)
+                    })
+                } catch (err) {
+                    console.log(err?.message)
+                }
+            }
+        }
+
+        bot.command('convo', async ctx => {
+            convoFn(ctx)
         })
 
         bot.command('stats', async ctx => {
