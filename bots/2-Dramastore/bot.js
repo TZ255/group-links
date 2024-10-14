@@ -9,7 +9,21 @@ const homeModel = require('./models/vue-home-db')
 const { nanoid } = require('nanoid')
 let axios = require('axios').default
 let cheerio = require('cheerio')
-const telegraph = require('telegraph-node')
+const telegraph = require('telegraph-node');
+
+//important middlewares
+const nkiriFetch = require('./functions/nkiri')
+const ph = new telegraph()
+const if_function_for_buttons = require('./functions/buttons')
+const postEpisodesInChannel = require('./functions/postEpisodeInChannel')
+const sendToDramastore = require('./functions/sendToDramastore')
+const naomymatusi = require('./functions/naomymatusi')
+const trendingFunctions = require('./functions/schedulers')
+const { sendTome, sendToMe } = require('./functions/partials/sendtome')
+const { createChatInviteLink } = require('./functions/partials/createLink')
+const { moveNewChannel, ApproveReqs } = require('./functions/smallfns')
+const StartCommand = require('./functions/start')
+const { TrendingTodayFn, TrendingThisWeekFn, TrendingThisMonthFn, TrendingAllTime } = require('./functions/partials/trendings');
 
 // important field
 const dt = {
@@ -58,29 +72,9 @@ const DramaStoreBot = async (app) => {
             .catch(e => console.log(e.message))
         app.use(`${hookPath}`, webhookCallback(bot, 'express', { timeoutMilliseconds: 30000 }))
 
-        //important middlewares
-        const nkiriFetch = require('./functions/nkiri')
-        const ph = new telegraph()
-        const if_function_for_buttons = require('./functions/buttons')
-        const postEpisodesInChannel = require('./functions/postEpisodeInChannel')
-        const sendToDramastore = require('./functions/sendToDramastore')
-        const naomymatusi = require('./functions/naomymatusi')
-        const trendingFunctions = require('./functions/schedulers')
-        const { sendTome, sendToMe } = require('./functions/partials/sendtome')
-        const { createChatInviteLink } = require('./functions/partials/createLink')
-        const { moveNewChannel, ApproveReqs } = require('./functions/smallfns')
-        const StartCommand = require('./functions/start')
-
-
-        // function to send any err in catch block
-        function anyErr(err) {
-            bot.api.sendMessage(741815228, err.message)
-                .catch(e => console.log(e.message))
-        }
-
         //configure rateLimit (2 messages in 3 seconds)
         bot.use(limit({
-            timeFrame: 3000, limit: 2,
+            timeFrame: 3000, limit: 3,
             // This is called when the limit is exceeded.
             onLimitExceeded: async (ctx) => {
                 await ctx.reply("Please refrain from sending too many requests!");
@@ -97,6 +91,12 @@ const DramaStoreBot = async (app) => {
             const ctx = err.ctx;
             console.error(`(Dstore): ${err.message}`, err);
         });
+
+        // function to send any err in catch block
+        function anyErr(err) {
+            bot.api.sendMessage(741815228, err.message)
+                .catch(e => console.log(e.message))
+        }
 
         var trendingRateLimit = []
 
@@ -215,79 +215,19 @@ const DramaStoreBot = async (app) => {
         })
 
         bot.command('trending_today', async ctx => {
-            try {
-                let id = ctx.chat.id
-                let d = new Date().toUTCString()
-
-                let todays = await dramasModel.find().limit(20).select('newDramaName tgChannel today id').sort('-today')
-                let txt = `🔥 <u><b>Trending Today (UTC)</b></u>\n<code>${d}</code>\n\n\n`
-
-                todays.forEach((d, i) => {
-                    let link = `<b><a href="http://dramastore.net/open/${d.id}">${i + 1}). ${d.newDramaName}</a></b>`
-                    txt = txt + `${link}\n🔥 ${d.today.toLocaleString('en-US')}\n\n`
-                })
-                let exp = `\n<blockquote>To download: Click the name of the drama\n\n🔥 XXX - means how many times the drama was downloaded</blockquote>`
-                await ctx.reply(txt + exp, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } })
-
-            } catch (err) {
-                await ctx.reply(err.message)
-            }
+            TrendingTodayFn(bot, ctx, dt)
         })
 
         bot.command('trending_this_week', async ctx => {
-            try {
-                let id = ctx.chat.id
-                let todays = await dramasModel.find().limit(30).select('newDramaName tgChannel thisWeek id').sort('-thisWeek')
-                let d = new Date().getDay()
-                if (d == 0) { d = 7 }
-                let txt = `🔥 <u><b>On Trending This Week (Day ${d})</b></u>\n\n\n`
-
-                todays.forEach((d, i) => {
-                    let link = `<b><a href="http://dramastore.net/open/${d.id}">${i + 1}). ${d.newDramaName}</a></b>`
-                    txt = txt + `${link}\n🔥 ${d.thisWeek.toLocaleString('en-US')}\n\n`
-                })
-                let exp = `\n<blockquote>To download: Click the name of the drama\n\n🔥 XXX - means how many times the drama was downloaded</blockquote>`
-                await ctx.reply(txt + exp, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } })
-
-            } catch (err) {
-                await ctx.reply(err.message)
-            }
+            TrendingThisWeekFn(bot, ctx, dt)
         })
 
         bot.command('trending_this_month', async ctx => {
-            try {
-                let id = ctx.chat.id
-                let todays = await dramasModel.find().limit(35).select('newDramaName tgChannel thisMonth id').sort('-thisMonth')
-                let txt = `🔥 <u><b>On Trending This Month (UTC)</b></u>\n\n\n`
-
-                todays.forEach((d, i) => {
-                    let link = `<b><a href="http://dramastore.net/open/${d.id}">${i + 1}). ${d.newDramaName}</a></b>`
-                    txt = txt + `${link}\n🔥 ${d.thisMonth.toLocaleString('en-US')}\n\n`
-                })
-                let exp = `\n<blockquote>To download: Click the name of the drama\n\n🔥 XXX - means how many times the drama was downloaded</blockquote>`
-                await ctx.reply(txt + exp, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } })
-
-            } catch (err) {
-                await ctx.reply(err.message)
-            }
+            TrendingThisMonthFn(bot, ctx, dt)
         })
 
         bot.command('all_time', async ctx => {
-            try {
-                let id = ctx.chat.id
-                let todays = await dramasModel.find().limit(45).select('newDramaName tgChannel timesLoaded id').sort('-timesLoaded')
-                let txt = `🔥 <u><b>Most Popular Dramas (of All Time)</b></u>\n\n\n`
-
-                todays.forEach((d, i) => {
-                    let link = `<b><a href="http://dramastore.net/open/${d.id}">${i + 1}). ${d.newDramaName}</a></b>`
-                    txt = txt + `${link}\n🔥 ${d.timesLoaded.toLocaleString('en-US')}\n\n`
-                })
-                let exp = `\n<blockquote>To download: Click the name of the drama\n\n🔥 XXX - means how many times the drama was downloaded</blockquote>`
-                await ctx.reply(txt + exp, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } })
-
-            } catch (err) {
-                await ctx.reply(err.message)
-            }
+            TrendingAllTime(bot, ctx, dt)
         })
 
         bot.command('stats', async ctx => {
@@ -385,7 +325,7 @@ const DramaStoreBot = async (app) => {
                 reply_markup: {
                     inline_keyboard: [ptsKeybd]
                 }
-            })
+            }).catch(e => console.log(e.message))
         })
 
         bot.on('callback_query', async ctx => {
