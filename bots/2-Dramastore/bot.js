@@ -7,8 +7,8 @@ const inviteModel = require('./models/invitelink')
 const dramasModel = require('./models/vue-new-drama')
 const homeModel = require('./models/vue-home-db')
 const { nanoid } = require('nanoid')
-let axios = require('axios').default
-let cheerio = require('cheerio')
+const axios = require('axios').default
+const cheerio = require('cheerio')
 const telegraph = require('telegraph-node');
 
 //important middlewares
@@ -24,6 +24,7 @@ const { createChatInviteLink } = require('./functions/partials/createLink')
 const { moveNewChannel, ApproveReqs } = require('./functions/smallfns')
 const StartCommand = require('./functions/start')
 const { TrendingTodayFn, TrendingThisWeekFn, TrendingThisMonthFn, TrendingAllTime } = require('./functions/partials/trendings');
+const { BroadcastConvoFn } = require('./functions/partials/convo');
 
 // important field
 const dt = {
@@ -231,40 +232,8 @@ const DramaStoreBot = async (app) => {
             TrendingAllTime(bot, ctx, dt)
         })
 
-        const convoFn = async (ctx) => {
-            if ([dt.shd, dt.htlt].includes(ctx.chat.id) && ctx.match) {
-                let msg_id = Number(ctx.match.trim())
-                let bads = ['deactivated', 'blocked', 'initiate', 'chat not found']
-                try {
-                    let all_users = await usersModel.find()
-                    await ctx.reply(`Starting broadcasting for ${all_users.length} users`)
-
-                    all_users.forEach((u, i) => {
-                        setTimeout(() => {
-                            bot.api.copyMessage(u.userId, dt.matangazoDB, msg_id)
-                                .then(() => {
-                                    if (i === all_users.length - 1) {
-                                        ctx.reply('Nimemaliza conversation').catch(e => console.log(e.message))
-                                    }
-                                })
-                                .catch((err) => {
-                                    if (bads.some((b) => err?.message.toLowerCase().includes(b))) {
-                                        u.deleteOne()
-                                        console.log(`${u?.chatid} deleted`)
-                                    } else {
-                                        console.log(`🤷‍♂️ ${err.message}`)
-                                    }
-                                })
-                        }, i * 50)
-                    })
-                } catch (err) {
-                    console.log(err?.message)
-                }
-            }
-        }
-
         bot.command('convo', async ctx => {
-            convoFn(ctx)
+            BroadcastConvoFn(bot, ctx, dt)
         })
 
         bot.command('stats', async ctx => {
