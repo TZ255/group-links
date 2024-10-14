@@ -57,9 +57,7 @@ const dt = {
 
 const DramaStoreBot = async (app) => {
     try {
-        const bot = new Bot(process.env.DS_TOKEN, {
-            client: { apiRoot: process.env.API_ROOT }
-        })
+        const bot = new Bot(process.env.DS_TOKEN)
 
         //set webhook
         let hookPath = `/telebot/${process.env.USER}/dramastore`

@@ -22,6 +22,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: true
     },
+    hasJoinedBackup: {
+        type: String,
+        default: false
+    },
     country: {
         type: Object
     }

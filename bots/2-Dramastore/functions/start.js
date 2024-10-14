@@ -37,26 +37,65 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
             if (payload.includes('marikiID-')) {
                 let ep_doc_id = payload.split('marikiID-')[1]
 
-                //find the document
-                let ep_doc = await episodesModel.findById(ep_doc_id)
+                //check if joined sponsor in every 2 mins under 30 seconds
+                let d = new Date()
+                let mins = d.getMinutes()
+                let secs = d.getSeconds()
+                if (mins % 2 == 0 && secs < 30) {
+                    let member = await bot.api.getChatMember(dt.aliProducts, ctx.chat.id)
+                    if (member.status == 'left') {
+                        let inv_db = await inviteModel.findOne().sort('-createdAt')
+                        let sp_ch = inv_db?.link
+                        await ctx.reply(`⚠ You didn't join our notifications channel. \n\nTo get this episode please join the channel through the link below and then click <b>✅ Done</b> button to proceed.\n\n<b>🔗 Join the Channel: 👇\n${sp_ch}\n${sp_ch}</b>\n\n•••`, {
+                            parse_mode: 'HTML',
+                            link_preview_options: { is_disabled: true },
+                            reply_markup: { inline_keyboard: [[{ text: '✅ Done (Joined)', url: `https://t.me/dramastorebot?start=marikiID-${ep_doc_id}` }]] }
+                        })
+                    } else {
+                        //find the document
+                        let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}</b>\n\n<code>Confirm 👇</code>`
-                let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
+                        let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}</b>\n\n<code>Confirm 👇</code>`
+                        let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
-                //reply with episodes info
-                let epinfo = await ctx.reply(txt, {
-                    parse_mode: 'HTML',
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                { text: "⬇ GO TO DOWNLOAD PAGE", url }
-                            ]
-                        ]
+                        //reply with episodes info
+                        await ctx.reply(txt, {
+                            parse_mode: 'HTML',
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        { text: "⬇ GO TO DOWNLOAD PAGE", url }
+                                    ]
+                                ]
+                            }
+                        })
+
+                        //upadate drama count & user
+                        UpdateChanUser(ctx, ep_doc)
                     }
-                })
+                } else {
+                    //if not in specified time
+                    //find the document
+                    let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                //upadate drama count & user
-                UpdateChanUser(ctx, ep_doc)
+                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}</b>\n\n<code>Confirm 👇</code>`
+                    let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
+
+                    //reply with episodes info
+                    await ctx.reply(txt, {
+                        parse_mode: 'HTML',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: "⬇ GO TO DOWNLOAD PAGE", url }
+                                ]
+                            ]
+                        }
+                    })
+
+                    //upadate drama count & user
+                    UpdateChanUser(ctx, ep_doc)
+                }
             }
 
             if (payload.includes('fromWeb')) {
