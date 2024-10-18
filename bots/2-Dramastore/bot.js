@@ -41,13 +41,13 @@ const dt = {
     loading: 1076477335,
     airt: 1426255234,
     hotel_king: -1001425392198,
-    hotel_del_luna: -1001457093470,
+    my_sweet_mobser: -1001457093470,
     dr_stranger: -1001199318533,
     romance_book: -1001175513824,
     my_love_from_star: -1001220805172,
     tale: -1001167737100,
     fiery: -1001315216267,
-    hwarang: -1001182807060,
+    qn_tears: -1001955559953,
     revenge: -1001863956613,
     link: process.env.BOT_LINK,
     aliProducts: -1002494520726,
@@ -119,7 +119,7 @@ const DramaStoreBot = async (app) => {
         //delaying
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-        const other_channels = [dt.hotel_del_luna, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale, dt.fiery, dt.hwarang, dt.revenge]
+        const other_channels = [dt.my_sweet_mobser, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale, dt.fiery, dt.revenge, dt.qn_tears]
 
 
         bot.command('start', async ctx => {

@@ -25,7 +25,7 @@ module.exports = async (bot, ctx, dt, anyErr, other_channels) => {
             other_channels.forEach(ch => {
                 bot.api.copyMessage(ch, ctx.chat.id, callbackMsgId, {
                     reply_markup: shemdoeReplyMarkup
-                })
+                }).catch(e => ctx.reply(`Error sending to: ${ch}\n\n${e}`))
             })
 
             setTimeout(() => {
