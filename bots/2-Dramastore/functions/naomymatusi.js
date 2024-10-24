@@ -21,24 +21,23 @@ module.exports = async (bot, ctx, dt, anyErr) => {
                 await bot.api.sendMessage(dt.shd, `<b>${txt}</b> \n\nfrom = <code>${username}</code>\nid = <code>${userid}</code>&mid=${mid}`, { parse_mode: 'HTML' })
             } else {
                 await bot.api.sendMessage(dt.htlt, `<b>${txt}</b> \n\nfrom = <code>${username}</code>\nid = <code>${userid}</code>&mid=${mid}`, { parse_mode: 'HTML', disable_notification: true })
-            }
 
-            //elekeza kutafuta drama
-            setTimeout(() => {
-                ctx.api.copyMessage(ctx.chat.id, dt.databaseChannel, 12062, {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                { text: '🔍 Find drama here', url: 'https://dramastore.net/list/all' }
+                //elekeza kutafuta drama
+                setTimeout(() => {
+                    ctx.api.copyMessage(ctx.chat.id, dt.databaseChannel, 12062, {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    { text: '🔍 Find drama here', url: 'https://dramastore.net/list/all' }
+                                ]
                             ]
-                        ]
-                    }
-                })
-                    .catch(e => console.log(e.message))
-            }, 500)
+                        }
+                    })
+                        .catch(e => console.log(e.message))
+                }, 500)
+            }
         }
     } catch (err) {
         console.log(err.message, err)
     }
-
 }
