@@ -75,10 +75,12 @@ const DramaStoreBot = async (app) => {
 
         //configure rateLimit (2 messages in 3 seconds)
         bot.use(limit({
-            timeFrame: 3000, limit: 3,
+            timeFrame: 5000, limit: 3,
             // This is called when the limit is exceeded.
             onLimitExceeded: async (ctx) => {
-                await ctx.reply("Please refrain from sending too many requests!");
+                if (ctx.chat.type === 'private') {
+                    await ctx.reply("Please refrain from sending too many requests!");
+                }
             },
             // Note that the key should be a number in string format such as "123456789".
             keyGenerator: (ctx) => {

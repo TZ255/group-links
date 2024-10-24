@@ -11,7 +11,6 @@ module.exports = async (bot, ctx, dt, anyErr) => {
 
             await bot.api.copyMessage(userid, myid, my_msg_id, { reply_parameters: { message_id: mid, allow_sending_without_reply: true } })
         } else {
-            await ctx.replyWithChatAction('typing')
             let userid = ctx.chat.id
             let txt = ctx.message.text
             let username = ctx.chat.first_name
