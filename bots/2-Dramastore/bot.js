@@ -25,6 +25,7 @@ const { moveNewChannel, ApproveReqs } = require('./functions/smallfns')
 const StartCommand = require('./functions/start')
 const { TrendingTodayFn, TrendingThisWeekFn, TrendingThisMonthFn, TrendingAllTime } = require('./functions/partials/trendings');
 const { BroadcastConvoFn } = require('./functions/partials/convo');
+const { MuhimuPeopleFn } = require('./functions/muhimupeople');
 
 // important field
 const dt = {
@@ -345,6 +346,18 @@ const DramaStoreBot = async (app) => {
 
         bot.on(':text', async ctx => {
             naomymatusi(bot, ctx, dt, anyErr)
+        })
+
+        bot.on(':voice', async ctx => {
+            MuhimuPeopleFn(bot, ctx, dt)
+        })
+
+        bot.on(':photo', async ctx=> {
+            MuhimuPeopleFn(bot, ctx, dt)
+        })
+
+        bot.on(':video', async ctx=> {
+            MuhimuPeopleFn(bot, ctx, dt)
         })
 
         //scrap nkiri every five minutes

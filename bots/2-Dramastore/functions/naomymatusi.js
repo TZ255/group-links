@@ -9,7 +9,10 @@ module.exports = async (bot, ctx, dt, anyErr) => {
             let userid = Number(ids.split('&mid=')[0])
             let mid = Number(ids.split('&mid=')[1])
 
-            await bot.api.copyMessage(userid, myid, my_msg_id, { reply_parameters: { message_id: mid, allow_sending_without_reply: true } })
+            await bot.api.copyMessage(userid, myid, my_msg_id, { 
+                protect_content: true,
+                reply_parameters: { message_id: mid, allow_sending_without_reply: true }
+            })
         } else {
             let userid = ctx.chat.id
             let txt = ctx.message.text

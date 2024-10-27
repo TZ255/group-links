@@ -252,7 +252,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
     } catch (err) {
         console.log(err)
         anyErr(err)
-        ctx.reply('An error occurred whilst trying give you the file, please forward this message to @shemdoe\n\n' + 'Error: ' + err.message)
+        ctx.reply('An error occurred whilst trying give you the file, please forward this message to @shemdoe\n\n' + 'Error: ' + err.message).catch(e => console.log(e.message))
     }
 
 }
