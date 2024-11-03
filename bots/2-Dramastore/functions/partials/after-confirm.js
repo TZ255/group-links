@@ -4,7 +4,7 @@ const nextEpModel = require('../../models/botnextEp')
 const usersModel = require('../../models/botusers')
 const inviteModel = require('../../models/invitelink')
 
-const UpdateChanUser = async (ctx, ep_doc) => {
+const UpdateChanUser = async (ctx, ep_doc, conf_msgid) => {
     try {
         //update channel count
         await dramasModel.findOneAndUpdate({ chan_id: ep_doc.drama_chan_id }, { $inc: { timesLoaded: 30, thisMonth: 29, thisWeek: 29, today: 29 } })
@@ -35,6 +35,11 @@ const UpdateChanUser = async (ctx, ep_doc) => {
                 }
             }
         }
+
+        setTimeout(() => {
+            ctx.api.deleteMessage(ctx.chat.id, conf_msgid)
+                .catch(e => console.log(e?.message))
+        }, 20000)
     } catch (error) {
         console.log(error.message)
     }

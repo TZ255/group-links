@@ -32,7 +32,7 @@ if (process.env.ENVIRONMENT == 'production') {
 
 app.use(getRoutes)
 
-//default port 8080
+//default port 3000
 app.listen(process.env.PORT || 3000, () => console.log('Listen to port 3000'))
 
 
