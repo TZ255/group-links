@@ -82,7 +82,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
                     //reply with episodes info
-                    await ctx.reply(txt, {
+                    let conf_msg = await ctx.reply(txt, {
                         parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
@@ -94,7 +94,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     })
 
                     //upadate drama count & user
-                    UpdateChanUser(ctx, ep_doc)
+                    UpdateChanUser(ctx, ep_doc, conf_msg.message_id)
                 }
             }
 
