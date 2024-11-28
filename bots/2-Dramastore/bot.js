@@ -47,7 +47,7 @@ const dt = {
     romance_book: -1001175513824,
     my_love_from_star: -1001220805172,
     tale: -1001167737100,
-    fiery: -1001315216267,
+    family_by_choice: -1002353438269,
     qn_tears: -1001955559953,
     vincenzo: -1001276495200,
     serendepity: -1002169508218,
@@ -123,7 +123,7 @@ const DramaStoreBot = async (app) => {
         //delaying
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-        const other_channels = [dt.my_sweet_mobser, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale, dt.fiery, dt.vincenzo, dt.qn_tears, dt.serendepity]
+        const other_channels = [dt.my_sweet_mobser, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale, dt.family_by_choice, dt.vincenzo, dt.qn_tears, dt.serendepity]
 
 
         bot.command('start', async ctx => {
