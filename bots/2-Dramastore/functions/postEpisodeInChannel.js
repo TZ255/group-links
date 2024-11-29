@@ -211,10 +211,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
 
                     else if (txt.includes('post_drama')) {
                         let chid = ctx.channelPost.chat.id
-                        let waikiki_id = -1002192201513
-                        //copy and pin H265
-                        let h265 = await ctx.api.copyMessage(chid, waikiki_id, 5)
-                        await ctx.api.pinChatMessage(chid, h265.message_id)
 
                         let info = await bot.api.getChat(chid)
                         let arrs = txt.split('=')
@@ -372,6 +368,14 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                                 ]
                             }
                         })
+
+                        //reply with drama info
+                        await ctx.reply(ujumb, {parse_mode: 'HTML'})
+
+                        //copy and pin H265
+                        let waikiki_id = -1002192201513
+                        let h265 = await ctx.api.copyMessage(chid, waikiki_id, 5)
+                        await ctx.api.pinChatMessage(chid, h265.message_id)
                     }
 
                     else if (txt.includes('update_id')) {
@@ -391,7 +395,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         await ctx.api.deleteMessage(ctx.chat.id, did.message_id)
                     }
                 }
-
             }
         }
 
