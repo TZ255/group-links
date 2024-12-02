@@ -305,7 +305,7 @@ const DramaStoreBot = async (app) => {
         bot.command('admin', async ctx => {
             try {
                 if (ctx.chat.id == dt.shd) {
-                    await bot.api.copyMessage(dt.shd, dt.databaseChannel, 5444)
+                    await bot.api.copyMessage(dt.shd, dt.databaseChannel, 13497)
                 }
             } catch (err) {
                 console.log(err.message)

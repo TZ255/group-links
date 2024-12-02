@@ -202,8 +202,11 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                             }
                         })
 
+                        //send to notification to backup channel
                         let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n🔔 New episode with English subtitles was just uploaded 🔥\n\n<b>🔗 Check it Out!\nwww.dramastore.net/new/episodes</b>`
-                        await bot.api.sendMessage(dt.aliProducts, caption, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } })
+
+                        if (query.notify == true) { await bot.api.sendMessage(dt.aliProducts, caption, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } }) }
+
                         await bot.api.deleteMessage(chatId, idToDelete)
                         await episodesModel.findByIdAndUpdate(episode_post._id, { $set: { poll_msg_id: poll.message_id } })
                         await usersModel.findOneAndUpdate({ userId: 741815228 }, { $inc: { downloaded: 1 } })
@@ -370,7 +373,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         })
 
                         //reply with drama info
-                        await ctx.reply(ujumb, {parse_mode: 'HTML'})
+                        await ctx.reply(ujumb, { parse_mode: 'HTML' })
 
                         //copy and pin H265
                         let waikiki_id = -1002192201513
@@ -381,6 +384,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                     else if (txt.includes('update_id')) {
                         let chan_id = ctx.channelPost.chat.id
                         let cname = ctx.channelPost.chat.title
+                        let invite = await ctx.api.createChatInviteLink(chan_id)
+                        let tgChannel = `tg://join?invite=${invite.invite_link.split('/+')[1]}`
 
                         if (cname.includes('Official -')) {
                             cname = cname.split('Official - ')[1]
@@ -388,10 +393,19 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                             cname = cname.split('[Eng sub] ')[1].trim()
                         }
 
-                        let up = await vueNewDramaModel.findOneAndUpdate({ newDramaName: cname }, { $set: { chan_id } }, { new: true })
-                        let did = await ctx.reply(`drama updated with ${up.chan_id}`)
+                        let up = await vueNewDramaModel.findOneAndUpdate({ newDramaName: cname }, { $set: { chan_id, tgChannel } }, { new: true })
+                        let did = await ctx.reply(`drama updated with ${up.chan_id} and ${tgChannel} as link`)
                         await delay(500)
                         await ctx.api.deleteMessage(ctx.chat.id, ctx.channelPost.message_id)
+                        await ctx.api.deleteMessage(ctx.chat.id, did.message_id)
+                    }
+                    else if (txt.includes('zima updates')) {
+                        let chan_id = ctx.channelPost.chat.id
+
+                        let up = await vueNewDramaModel.findOneAndUpdate({ chan_id }, { $set: { notify: false } }, { new: true })
+                        let did = await ctx.reply(`Backup notifications turned off`)
+                        await delay(500)
+                        await ctx.api.deleteMessage()
                         await ctx.api.deleteMessage(ctx.chat.id, did.message_id)
                     }
                 }

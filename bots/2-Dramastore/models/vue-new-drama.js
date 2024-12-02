@@ -38,6 +38,7 @@ const NewDrama = new Schema(
     today: {type: Number},
     thisWeek: {type: Number},
     thisMonth: {type: Number},
+    notify: {type: Boolean}
   },
   { timestamps: true, strict: false }
 );
