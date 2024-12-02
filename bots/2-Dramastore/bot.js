@@ -123,7 +123,7 @@ const DramaStoreBot = async (app) => {
         //delaying
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-        const other_channels = [dt.my_sweet_mobser, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale, dt.family_by_choice, dt.vincenzo, dt.qn_tears, dt.serendepity]
+        const other_channels = [dt.my_sweet_mobser, dt.hotel_king, dt.dr_stranger, dt.romance_book, dt.my_love_from_star, dt.tale]
 
 
         bot.command('start', async ctx => {

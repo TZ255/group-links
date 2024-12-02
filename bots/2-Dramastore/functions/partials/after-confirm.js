@@ -37,8 +37,11 @@ const UpdateChanUser = async (ctx, ep_doc, conf_msgid) => {
         }
 
         setTimeout(() => {
-            ctx.api.deleteMessage(ctx.chat.id, conf_msgid)
-                .catch(e => console.log(e?.message))
+            let link = `https://t.me/+N3ISfuRxfR41NDZk`
+            let invite_msg = `<b>More Korean Drama? Join Our Main Channel\n${link}</b>`
+            ctx.api.editMessageText(ctx.chat.id, conf_msgid, invite_msg, {
+                parse_mode: 'HTML', link_preview_options: { is_disabled: true }
+            }).catch(e => console.log(e?.message))
         }, 20000)
     } catch (error) {
         console.log(error.message)
