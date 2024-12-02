@@ -61,6 +61,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                         //reply with episodes info
                         let conf_msg = await ctx.reply(txt, {
                             parse_mode: 'HTML',
+                            protect_content: true,
                             reply_markup: {
                                 inline_keyboard: [
                                     [
