@@ -41,7 +41,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                 let d = new Date()
                 let mins = d.getMinutes()
                 let secs = d.getSeconds()
-                if (mins % 2 == 0 && secs < 30) {
+                if (mins % 2 == 0) {
                     let member = await bot.api.getChatMember(dt.aliProducts, ctx.chat.id)
                     if (member.status == 'left') {
                         let inv_db = await inviteModel.findOne().sort('-createdAt')
@@ -85,6 +85,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     //reply with episodes info
                     let conf_msg = await ctx.reply(txt, {
                         parse_mode: 'HTML',
+                        protect_content: true,
                         reply_markup: {
                             inline_keyboard: [
                                 [
