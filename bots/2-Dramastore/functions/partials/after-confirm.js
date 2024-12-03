@@ -38,7 +38,7 @@ const UpdateChanUser = async (ctx, ep_doc, conf_msgid) => {
 
         setTimeout(() => {
             let link = `https://t.me/+N3ISfuRxfR41NDZk`
-            let invite_msg = `<b>More Korean Drama? Join Our Main Channel\n${link}</b>`
+            let invite_msg = `<tg-spoiler><b>More Korean Drama? Join Our Main Channel\n${link}</b></tg-spoiler>`
             ctx.api.editMessageText(ctx.chat.id, conf_msgid, invite_msg, {
                 parse_mode: 'HTML', link_preview_options: { is_disabled: true }
             }).catch(e => console.log(e?.message))
