@@ -9,6 +9,9 @@ const malaya_tsap = require('../jsons/whatsapp/malaya.json')
 const michezo_tsap = require('../jsons/michezo/tsap.json')
 const michezo_tg = require('../jsons/michezo/tg.json')
 
+//dramastore
+const episodesModel = require('../bots/2-Dramastore/models/vue-new-episode')
+
 router.get('/', async (req, res) => {
     try {
         res.render('1home/home', {

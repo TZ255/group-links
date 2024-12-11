@@ -5,6 +5,7 @@ require('dotenv').config()
 const usersModel = require('./models/botusers')
 const inviteModel = require('./models/invitelink')
 const dramasModel = require('./models/vue-new-drama')
+const episodesModel = require('./models/vue-new-episode')
 const homeModel = require('./models/vue-home-db')
 const { nanoid } = require('nanoid')
 const axios = require('axios').default
@@ -31,6 +32,7 @@ const { MuhimuPeopleFn } = require('./functions/muhimupeople');
 const dt = {
     ds: -1001245181784,
     databaseChannel: -1001239425048,
+    backup: -1002250839443,
     subsDb: '-1001570087172',
     whats: process.env.WHATS,
     dstore_domain: 'https://dramastore.net',
@@ -336,6 +338,24 @@ const DramaStoreBot = async (app) => {
             }).catch(e => console.log(e.message))
         })
 
+        bot.command('backup', async ctx => {
+            try {
+                let backup_channel = -1002250839443
+                let all = await episodesModel.find()
+
+                for (let [index, ep] of all.entries()) {
+                    setTimeout(() => {
+                        bot.api.copyMessage(backup_channel, dt.databaseChannel, ep.epid)
+                        .then((success)=> {
+                            episodesModel.findOneAndUpdate({epid: ep.epid}, {$set: {backup: success.message_id}}).catch(e => console.log(e?.message))
+                        }).catch(e => console.log(e.message))
+                    }, 3500 * index)
+                }
+            } catch (error) {
+                ctx.reply(error?.message).catch(e => console.log(e?.message))
+            }
+        })
+
         bot.on('callback_query', async ctx => {
             sendToDramastore(bot, ctx, dt, anyErr, other_channels)
         })
@@ -352,11 +372,11 @@ const DramaStoreBot = async (app) => {
             MuhimuPeopleFn(bot, ctx, dt)
         })
 
-        bot.on(':photo', async ctx=> {
+        bot.on(':photo', async ctx => {
             MuhimuPeopleFn(bot, ctx, dt)
         })
 
-        bot.on(':video', async ctx=> {
+        bot.on(':video', async ctx => {
             MuhimuPeopleFn(bot, ctx, dt)
         })
 

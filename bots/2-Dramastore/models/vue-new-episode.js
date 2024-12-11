@@ -9,6 +9,7 @@ const newEpisodeSchema = new Schema(
     drama_name: {type: String},
     drama_chan_id: {type: Number},
     poll_msg_id: {type: Number},
+    backup: {type: Number}
   },
   { timestamps: true, strict: false }
 );

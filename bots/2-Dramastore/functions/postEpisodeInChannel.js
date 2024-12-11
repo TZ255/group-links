@@ -125,13 +125,21 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                             await vueNewDramaModel.findOneAndUpdate({ chan_id }, { $set: { status: "Completed" } })
                         }
 
-                        let episode_post = await episodesModel.findOneAndUpdate({ epno: Number(ep), drama_chan_id: query.chan_id }, { $set: { epid: Number(epMsgId) } }, { new: true })
+                        //backup
+                        let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
 
-                        if (!episode_post) {
-                            episode_post = await episodesModel.create({
-                                epid: Number(epMsgId), epno: Number(ep), size, drama_name: query.newDramaName, drama_chan_id: query.chan_id, poll_msg_id: 666
-                            })
-                        }
+                        //create or update database
+                        let episode_post = await episodesModel.findOneAndUpdate({ epno: Number(ep), drama_chan_id: query.chan_id }, {
+                            $set: {
+                                epid: Number(epMsgId),
+                                epno: Number(ep),
+                                drama_chan_id: query.chan_id,
+                                size,
+                                drama_name: query.newDramaName,
+                                poll_msg_id: 666,
+                                backup: success.message_id
+                            }
+                        }, { new: true, upsert: true })
 
                         if (txt.includes('540p_WEBDL')) {
                             quality = '540p WEBDL'
