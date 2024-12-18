@@ -321,7 +321,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         let telegraph_link = page.url
                         let link_id = invite_link.split('/+')[1]
 
-
                         //create to db if not reposted
                         if (!txt.includes('repost_drama')) {
                             await new_drama.create({
@@ -339,7 +338,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                                 timesLoaded: 1,
                                 nano: nanoid(5),
                                 chan_id: chid,
-                                country
+                                country,
+                                notify: true
                             })
 
                             let yearScrap = dramaName.split('(2')[1].split(')')[0]
