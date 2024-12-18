@@ -416,6 +416,15 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         await ctx.api.deleteMessage()
                         await ctx.api.deleteMessage(ctx.chat.id, did.message_id)
                     }
+                    else if (txt.includes('washa updates')) {
+                        let chan_id = ctx.channelPost.chat.id
+
+                        let up = await vueNewDramaModel.findOneAndUpdate({ chan_id }, { $set: { notify: true } }, { new: true })
+                        let did = await ctx.reply(`Backup notifications turned on`)
+                        await delay(500)
+                        await ctx.api.deleteMessage()
+                        await ctx.api.deleteMessage(ctx.chat.id, did.message_id)
+                    }
                 }
             }
         }
