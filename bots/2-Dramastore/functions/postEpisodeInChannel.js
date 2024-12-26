@@ -113,6 +113,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         let chatId = ctx.channelPost.chat.id
                         let idToDelete = ctx.channelPost.message_id
                         let quality = '540p HDTV H.264'
+                        let db_quality = "540p"
                         let subs = '#English Soft-subbed'
                         let totalEps = ''
                         let nano = ''
@@ -134,34 +135,14 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         //backup
                         let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
 
-                        //create or update database
-                        let episode_post = await episodesModel.findOneAndUpdate({ epno: Number(ep), drama_chan_id: query.chan_id }, {
-                            $set: {
-                                epid: Number(epMsgId),
-                                epno: Number(ep),
-                                drama_chan_id: query.chan_id,
-                                size,
-                                drama_name: query.newDramaName,
-                                poll_msg_id: 666,
-                                backup: success.message_id
-                            }
-                        }, { new: true, upsert: true })
-
+                        //change caption parameters
                         if (txt.includes('540p_WEBDL')) {
                             quality = '540p WEBDL'
                         }
                         else if (txt.includes('480p_WEBDL')) {
                             quality = '480p WEBDL'
                             enc = ''
-                        }
-                        else if (txt.includes('480p_HDTV_MP4')) {
-                            quality = '480p HDTV (kissasian)'
-                            enc = ''
-                            subs = ''
-                        }
-                        else if (txt.includes('480p_HDTV_MKV')) {
-                            quality = '540p HDTV H.265'
-                            enc = ''
+                            db_quality = "480p"
                         }
                         else if (txt.includes('NK')) {
                             quality = '540p HDTV H.265'
@@ -183,19 +164,30 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         }
                         else if (txt.includes('720p_WEBDL')) {
                             quality = '720p WEBDL'
+                            db_quality = "720p"
                         }
 
                         else if (txt.includes('720p_HDTV')) {
                             quality = '720p HDTV'
+                            db_quality = "720p"
                         }
 
                         else if (txt.includes('1080p_WEDDL')) {
                             quality = '1080p WEBDL'
+                            db_quality = "1080p"
                         }
 
                         else if (txt.includes('dual')) {
                             ep = ep + '-' + ('0' + (Number(ep) + 1)).slice(-2)
                         }
+
+                        //create or update database
+                        let episode_post = await episodesModel.findOneAndUpdate({ epno: Number(ep), drama_chan_id: query.chan_id, quality: db_quality }, {
+                            $set: {
+                                epid: Number(epMsgId), size, drama_name: query.newDramaName,
+                                poll_msg_id: 666, backup: success.message_id,
+                            }
+                        }, { new: true, upsert: true })
 
                         let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`
 
@@ -217,7 +209,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         })
 
                         //send to notification to backup channel
-                        let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n🔔 New episode with English subtitles was just uploaded 🔥\n\n<b>🔗 Check it Out!\nwww.dramastore.net/new/episodes</b>`
+                        let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n🔔 New episode (${episode_post.quality}) with English subtitles just uploaded 🔥\n\n<b>🔗 Check it Out!\nwww.dramastore.net/new/episodes</b>`
 
                         if (query.notify == true) { await bot.api.sendMessage(dt.aliProducts, caption, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } }) }
 
