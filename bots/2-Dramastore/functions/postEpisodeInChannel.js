@@ -70,6 +70,12 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         extraParams = 'SOJU'
                     }
 
+                    else if (fileName.toLowerCase().includes('.720p.WEBDL.')) {
+                        capQty = '720P WEB-DL H.264'
+                        muxed = '#English Soft-subbed'
+                        extraParams = '720p_WEBDL'
+                    }
+
                     else if (fileName.toLowerCase().includes('.360p.nk.')) {
                         capQty = '360P HDTV H.264'
                         muxed = '#English Hard-subbed'
