@@ -8,7 +8,6 @@ const dramasModel = require('./models/vue-new-drama')
 const episodesModel = require('./models/vue-new-episode')
 const homeModel = require('./models/vue-home-db')
 const { nanoid } = require('nanoid')
-const axios = require('axios').default
 const cheerio = require('cheerio')
 const telegraph = require('telegraph-node');
 
@@ -27,6 +26,7 @@ const StartCommand = require('./functions/start')
 const { TrendingTodayFn, TrendingThisWeekFn, TrendingThisMonthFn, TrendingAllTime } = require('./functions/partials/trendings');
 const { BroadcastConvoFn } = require('./functions/partials/convo');
 const { MuhimuPeopleFn } = require('./functions/muhimupeople');
+const axios = require('axios');
 
 // important field
 const dt = {
@@ -62,7 +62,6 @@ const dt = {
 const DramaStoreBot = async (app) => {
     try {
         const bot = new Bot(process.env.DS_TOKEN)
-
         //set webhook
         let hookPath = `/telebot/${process.env.USER}/dramastore`
         await bot.api.setWebhook(`https://${process.env.DOMAIN}${hookPath}`, {

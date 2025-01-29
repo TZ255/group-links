@@ -22,16 +22,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                     let extraParams = ''
 
                     //document spillited with dramastore
-                    if (fileName.includes('[dramastore.net] E')) {
-                        noEp = fileName.split('[dramastore.net] E')[1].substring(0, 2)
-                    } else if (fileName.includes('[dramastore.net] S01E')) {
-                        noEp = fileName.split('[dramastore.net] S01E')[1].substring(0, 2)
-                    } else if (fileName.includes('[dramastore.net] S02E')) {
-                        noEp = fileName.split('[dramastore.net] S02E')[1].substring(0, 2)
-                    } else if (fileName.includes('[dramastore.net] S03E')) {
-                        noEp = fileName.split('[dramastore.net] S03E')[1].substring(0, 2)
-                    } else if (fileName.includes('[dramastore.net] S04E')) {
-                        noEp = fileName.split('[dramastore.net] S04E')[1].substring(0, 2)
+                    if (fileName.includes('[dramastore.net] ')) {
+                        noEp = fileName.split('[dramastore.net] ')[1].split('.')[0]
                     } else if (fileName.includes('@dramaost.')) {
                         noEp = fileName.split('@dramaost.E')[1].split('.')[0]
                     }
@@ -106,7 +98,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                     let txt = ctx.channelPost.text
                     if (txt.includes('uploading_new_episode')) {
                         let data = txt.split('_')
-                        let ep = data[3].replace('E', '') //remove E from E01
+                        let ep = data[3].match(/E(\d+)/)[1] //get number part after E
                         let size = data[4].substring(1) + " MB"
                         let sizeWeb = data[4].substring(1).trim()
                         let epMsgId = data[5].substring(5)
