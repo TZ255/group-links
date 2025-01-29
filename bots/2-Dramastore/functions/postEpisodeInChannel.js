@@ -98,6 +98,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                     let txt = ctx.channelPost.text
                     if (txt.includes('uploading_new_episode')) {
                         let data = txt.split('_')
+                        let ep_string = data[3]
                         let ep = data[3].match(/E(\d+)/)[1] //get number part after E
                         let size = data[4].substring(1) + " MB"
                         let sizeWeb = data[4].substring(1).trim()
@@ -109,7 +110,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         let subs = '#English Soft-subbed'
                         let totalEps = ''
                         let nano = ''
-                        let _ep_word = '📺 Ep. '
 
                         let cname = ctx.channelPost.sender_chat.title
 
@@ -123,6 +123,9 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         if (query.noOfEpisodes == ep) {
                             await vueNewDramaModel.findOneAndUpdate({ chan_id }, { $set: { status: "Completed" } })
                         }
+
+                        // ep_word
+                        let _ep_word = `📺 ${query.newDramaName.split('(20')[0]}`
 
                         //backup
                         let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
@@ -183,7 +186,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
 
                         let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`
 
-                        let poll = await bot.api.sendPoll(chatId, `${_ep_word}${ep}${totalEps} | ${quality} \n${subs}`, [
+                        let poll = await bot.api.sendPoll(chatId, `${_ep_word}${ep_string}${totalEps} | ${quality} \n${subs}`, [
                             '👍 Good',
                             '👎 Bad'
                         ], {
