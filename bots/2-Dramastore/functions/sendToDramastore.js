@@ -110,7 +110,7 @@ module.exports = async (bot, ctx, dt, anyErr, other_channels) => {
         }
 
         else if (ctx.callbackQuery.data.includes('newHbtn')) {
-            let msg = `To download this episode click the "⬇ DOWNLOAD NOW" button and Tap "START" at bottom of the bot to get the file.  \n\n📞 Any problem contact @shemdoe`
+            let msg = `- To download this episode click the "⬇ DOWNLOAD NOW" button then proceed to the download page.  \n\n📞 Any problem contact @shemdoe`
 
             ctx.answerCallbackQuery({
                 text: msg,
@@ -120,7 +120,7 @@ module.exports = async (bot, ctx, dt, anyErr, other_channels) => {
         }
 
         else if (ctx.callbackQuery.data.includes('newHbtn2')) {
-            let msg = `- To download this episode click the "⬇ DOWNLOAD NOW" button. \n- Confirm your download in Bot by opening our offer page for 10 seconds  \n\n📞 Any problem contact @shemdoe`
+            let msg = `- To download this episode click the "⬇ DOWNLOAD NOW" button then proceed to the download page.  \n\n📞 Any problem contact @shemdoe`
 
             ctx.answerCallbackQuery({
                 text: msg,

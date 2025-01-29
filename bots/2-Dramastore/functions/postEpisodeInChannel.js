@@ -98,7 +98,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                     let txt = ctx.channelPost.text
                     if (txt.includes('uploading_new_episode')) {
                         let data = txt.split('_')
-                        let ep_string = data[3]
                         let ep = data[3].match(/E(\d+)/)[1] //get number part after E
                         let size = data[4].substring(1) + " MB"
                         let sizeWeb = data[4].substring(1).trim()
@@ -125,7 +124,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         }
 
                         // ep_word
-                        let _ep_word = `📺 ${query.newDramaName.split('(20')[0]}`
+                        let _ep_word = `📺 ${query.newDramaName}\nEpisode ${ep}${totalEps}`
 
                         //backup
                         let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
@@ -186,7 +185,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
 
                         let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`
 
-                        let poll = await bot.api.sendPoll(chatId, `${_ep_word}${ep_string}${totalEps} | ${quality} \n${subs}`, [
+                        let poll = await bot.api.sendPoll(chatId, `${_ep_word} | ${quality} with English subtitles`, [
                             '👍 Good',
                             '👎 Bad'
                         ], {
@@ -196,7 +195,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                                         { text: `📥 DOWNLOAD NOW E${ep} [${size}]`, url: `https://${dt.link}marikiID-${episode_post._id}` }
                                     ],
                                     [
-                                        { text: '📥 OPTION 2', url: option2 },
+                                        { text: '📥 LINK #2', url: option2 },
                                         { text: '💡 Help', callback_data: 'newHbtn2' }
                                     ]
                                 ]
