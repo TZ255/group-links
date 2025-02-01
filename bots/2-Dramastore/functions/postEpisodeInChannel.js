@@ -124,7 +124,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                         }
 
                         // ep_word
-                        let _ep_word = `📺 ${query.newDramaName}\nEpisode ${ep}${totalEps}`
+                        let _ep_word = `📺 Episode ${ep}${totalEps}`
 
                         //backup
                         let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
