@@ -112,7 +112,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     }
 
                     else if (txt.includes('post_db=')) {
-                        TelegraphPage(ctx)
+                        TelegraphPage(bot, ctx, dt)
                     }
 
                     else if (txt.includes('update_id')) {

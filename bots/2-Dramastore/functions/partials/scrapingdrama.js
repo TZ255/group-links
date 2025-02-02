@@ -255,7 +255,7 @@ const scrapeAsianWiki = async (ctx, txt, dt, bot) => {
     }
 }
 
-const TelegraphPage = async (ctx) => {
+const TelegraphPage = async (bot, ctx, dt) => {
     try {
         let text = ctx.channelPost.text
         let _id = text.split('=')[1]
@@ -265,7 +265,7 @@ const TelegraphPage = async (ctx) => {
         // Format the message to send via Telegram
         let ujumb = `<a href="${drama.telegraph}">🇰🇷 </a><u><b>${drama.newDramaName}</b></u>`;
         if (drama?.country === 'China') {
-            ujumb = `<a href="${telegraph_link}">🇨🇳 </a><u><b>${drama.newDramaName}</b></u>`;
+            ujumb = `<a href="${drama.telegraph}">🇨🇳 </a><u><b>${drama.newDramaName}</b></u>`;
         }
 
         // Get the channel id from the context (if using channel posts)
