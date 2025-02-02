@@ -26,10 +26,10 @@ app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.set('trust proxy', true)
 if (process.env.ENVIRONMENT == 'production') {
-    DramaStoreBot.DramaStoreBot(app)
+    
     bots.myBotsFn()
 }
-
+DramaStoreBot.DramaStoreBot(app)
 app.use(getRoutes)
 
 //default port 3000

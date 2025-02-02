@@ -2,8 +2,10 @@ const vueNewDramaModel = require('../models/vue-new-drama')
 const episodesModel = require('../models/vue-new-episode')
 const postModel = require('../models/postmodel')
 const usersModel = require('../models/botusers')
+const {scrapeMyDramalist, scrapeAsianWiki, TelegraphPage} = require('./partials/scrapingdrama')
+const UploadingNewEpisode = require('./partials/uploading_new_episode')
 
-module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_drama, homeModel, other_channels, nanoid, delay) => {
+module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
     try {
         // check if it is used in channel
         if (ctx.update.channel_post) {
@@ -97,288 +99,20 @@ module.exports = async (bot, ctx, next, dt, anyErr, axios, cheerio, ph, new_dram
                 if (ctx.channelPost.hasOwnProperty('text')) {
                     let txt = ctx.channelPost.text
                     if (txt.includes('uploading_new_episode')) {
-                        let data = txt.split('_')
-                        let ep = data[3].match(/E(\d+)/)[1] //get number part after E
-                        let size = data[4].substring(1) + " MB"
-                        let sizeWeb = data[4].substring(1).trim()
-                        let epMsgId = data[5].substring(5)
-                        let chatId = ctx.channelPost.chat.id
-                        let idToDelete = ctx.channelPost.message_id
-                        let quality = '540p HDTV H.264'
-                        let db_quality = "540p"
-                        let subs = '#English Soft-subbed'
-                        let totalEps = ''
-                        let nano = ''
-
-                        let cname = ctx.channelPost.sender_chat.title
-
-                        let chan_id = ctx.channelPost.sender_chat.id
-                        let query = await vueNewDramaModel.findOne({ chan_id })
-                        if (query.noOfEpisodes.length == 1) {
-                            totalEps = `/0${query.noOfEpisodes}`
-                        } else { totalEps = `/${query.noOfEpisodes}` }
-
-                        //update if finished
-                        if (query.noOfEpisodes == ep) {
-                            await vueNewDramaModel.findOneAndUpdate({ chan_id }, { $set: { status: "Completed" } })
-                        }
-
-                        // ep_word
-                        let _ep_word = `📺 Episode ${ep}${totalEps}`
-
-                        //backup
-                        let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId))
-
-                        //change caption parameters
-                        if (txt.includes('540p_WEBDL')) {
-                            quality = '540p WEBDL'
-                        }
-                        else if (txt.includes('480p_WEBDL')) {
-                            quality = '480p WEBDL'
-                            enc = ''
-                            db_quality = "480p"
-                        }
-                        else if (txt.includes('NK')) {
-                            quality = '540p HDTV H.265'
-                            subs = '#English Hard-subbed'
-                        }
-                        else if (txt.includes('NN=')) {
-                            quality = '540p HDTV H.265'
-                            subs = '#English sub'
-                            let subId = txt.split('NN=')[1]
-                            epMsgId = `TT${epMsgId}TT${subId}`
-                        }
-                        else if (txt.includes('SOJU')) {
-                            quality = '480p HDTV H.265'
-                            subs = '#English Hard-subbed'
-                        }
-                        else if (txt.includes('KIMOI')) {
-                            quality = '360p HDTV H.264 (kimoiTV)'
-                            subs = '#English Hard-subbed'
-                        }
-                        else if (txt.includes('720p_WEBDL')) {
-                            quality = '720p WEBDL'
-                            db_quality = "720p"
-                        }
-
-                        else if (txt.includes('720p_HDTV')) {
-                            quality = '720p HDTV'
-                            db_quality = "720p"
-                        }
-
-                        else if (txt.includes('1080p_WEDDL')) {
-                            quality = '1080p WEBDL'
-                            db_quality = "1080p"
-                        }
-
-                        else if (txt.includes('dual')) {
-                            ep = ep + '-' + ('0' + (Number(ep) + 1)).slice(-2)
-                        }
-
-                        //create or update database
-                        let episode_post = await episodesModel.findOneAndUpdate({ epno: Number(ep), drama_chan_id: query.chan_id, quality: db_quality }, {
-                            $set: {
-                                epid: Number(epMsgId), size, drama_name: query.newDramaName,
-                                poll_msg_id: 666, backup: success.message_id,
-                            }
-                        }, { new: true, upsert: true })
-
-                        let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`
-
-                        let poll = await bot.api.sendPoll(chatId, `${_ep_word} | ${quality} with English subtitles`, [
-                            '👍 Good',
-                            '👎 Bad'
-                        ], {
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        { text: `📥 DOWNLOAD NOW E${ep} [${size}]`, url: `https://${dt.link}marikiID-${episode_post._id}` }
-                                    ],
-                                    [
-                                        { text: '📥 LINK #2', url: option2 },
-                                        { text: '💡 Help', callback_data: 'newHbtn2' }
-                                    ]
-                                ]
-                            }
-                        })
-
-                        //send to notification to backup channel
-                        let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n🔔 New episode (${episode_post.quality}) with English subtitles just uploaded 🔥\n\n<b>🔗 Check it Out!\nwww.dramastore.net/new/episodes</b>`
-
-                        if (query.notify == true) { await bot.api.sendMessage(dt.aliProducts, caption, { parse_mode: 'HTML', link_preview_options: { is_disabled: true } }) }
-
-                        await bot.api.deleteMessage(chatId, idToDelete)
-                        await episodesModel.findByIdAndUpdate(episode_post._id, { $set: { poll_msg_id: poll.message_id } })
-                        await usersModel.findOneAndUpdate({ userId: 741815228 }, { $inc: { downloaded: 1 } })
+                        // uploading new episode
+                        UploadingNewEpisode(ctx, txt, dt, bot)
                     }
 
                     else if (txt.includes('post_drama')) {
-                        let chid = ctx.channelPost.chat.id
+                        // from mydramalist
+                        //scrapeMyDramalist(ctx, txt, dt, bot)
 
-                        let info = await bot.api.getChat(chid)
-                        let arrs = txt.split('=')
+                        // from asianwiki
+                        //scrapeAsianWiki(ctx, txt, dt, bot)
+                    }
 
-                        let invite_link = info.invite_link
-                        let url = arrs[1].trim()
-                        let dramaid = arrs[2].trim()
-
-                        const html = await axios.get(url)
-                        const $ = cheerio.load(html.data)
-                        let syn = $('.show-synopsis').text()
-                        if (syn.includes('(Source: ')) {
-                            let arr = syn.split('(Source: ')
-                            syn = arr[0].trim()
-                        }
-                        let genres = $('.show-genres').text().split('Genres: ')[1].trim()
-                        let pic_href = $('.row .cover .block').attr('href')
-                        let pic_id = pic_href.split('/photos/')[1].trim()
-                        let highq_img = `https://i.mydramalist.com/${pic_id}f.jpg`
-                        let lowq_img = ''
-                        if ($('.row .cover .block img').attr('src')) {
-                            lowq_img = $('.row .cover .block img').attr('src')
-                        } else {
-                            lowq_img = $('.row .cover .block img').attr('data-cfsrc')
-                        }
-
-                        if (lowq_img.includes(`/cdn-cgi/mirage/`)) {
-                            let raw = lowq_img.split('https:')
-                            lowq_img = 'https:' + raw[1]
-                        }
-
-                        let dramaName = $('.box-header .film-title').text().trim()
-
-                        let no_of_episodes = $('.box-body ul li:nth-child(3)').text().split('Popularity')[0].split('Episodes: ')[1].trim()
-                        if (no_of_episodes.length == 1) {
-                            no_of_episodes = '0' + no_of_episodes
-                        }
-                        let aired = $('.box-body ul li:nth-child(4)').text().split('Watchers')[0].split('Aired: ')[1].trim()
-                        let country = $('.box-body ul li:nth-child(2)').text().split('Country: ')[1].split('Ranked')[0].trim()
-
-                        let page = await ph.createPage(process.env.TOKEN, dramaName, [
-                            { tag: 'img', attrs: { src: highq_img } },
-                            { tag: 'h3', children: ['Details'] },
-                            {
-                                tag: 'ul', children: [
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Drama: '] },
-                                            { tag: 'i', children: [dramaName] }
-                                        ]
-                                    },
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Episodes: '] },
-                                            { tag: 'i', children: [no_of_episodes] }
-                                        ]
-                                    },
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Subtitle: '] },
-                                            { tag: 'i', children: ['English'] }
-                                        ]
-                                    },
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Aired: '] },
-                                            { tag: 'i', children: [aired] }
-                                        ]
-                                    },
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Genre: '] },
-                                            { tag: 'i', children: [genres] }
-                                        ]
-                                    },
-                                    {
-                                        tag: 'li', children: [
-                                            { tag: 'b', children: ['Country: '] },
-                                            { tag: 'i', children: [country] }
-                                        ]
-                                    }
-                                ]
-                            },
-                            { tag: 'h3', children: ['Synopsis'] },
-                            {
-                                tag: 'em', children: [
-                                    {
-                                        tag: 'i', children: [syn]
-                                    }
-                                ]
-                            }
-                        ],
-                            {
-                                author_name: '@shemdoe',
-                                author_url: 'https://t.me/shemdoe'
-                            })
-                        let telegraph_link = page.url
-                        let link_id = invite_link.split('/+')[1]
-
-                        //create to db if not reposted
-                        if (!txt.includes('repost_drama')) {
-                            await new_drama.create({
-                                newDramaName: dramaName,
-                                noOfEpisodes: no_of_episodes,
-                                genre: genres,
-                                aired,
-                                subtitle: 'English',
-                                id: dramaid,
-                                coverUrl: highq_img,
-                                synopsis: syn.replace(/\n/g, '<br>'),
-                                status: 'Ongoing',
-                                tgChannel: `tg://join?invite=${link_id}`,
-                                telegraph: telegraph_link,
-                                timesLoaded: 1,
-                                nano: nanoid(5),
-                                chan_id: chid,
-                                country,
-                                notify: true
-                            })
-
-                            let yearScrap = dramaName.split('(2')[1].split(')')[0]
-                            let strYr = `2${yearScrap}`
-                            await homeModel.create({
-                                idToHome: dramaid,
-                                year: Number(strYr),
-                                dramaName,
-                                imageUrl: lowq_img,
-                                episodesUrl: dramaid,
-                            })
-                        }
-
-                        let ujumb = `<a href="${telegraph_link}">🇰🇷 </a><u><b>${dramaName}</b></u>`
-                        if (country == 'China') {
-                            ujumb = `<a href="${telegraph_link}">🇨🇳 </a><u><b>${dramaName}</b></u>`
-                        }
-
-                        if (txt.includes('repost_drama')) {
-                            ujumb = `#UPDATED\n<a href="${telegraph_link}">🇰🇷 </a><u><b>${dramaName}</b></u>`
-                        }
-
-                        await bot.api.sendMessage(dt.shd, ujumb, {
-                            parse_mode: 'HTML',
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        { text: '⬇ DOWNLOAD ALL EPISODES', url: invite_link }
-                                    ],
-                                    [
-                                        { text: '📊 Trending', url: 't.me/dramastorebot?start=on_trending' },
-                                        { text: '🔍 Find drama', url: 't.me/dramastorebot?start=find_drama' }
-                                    ],
-                                    [
-                                        { text: 'Push to dramastore', callback_data: 'push' }
-                                    ]
-                                ]
-                            }
-                        })
-
-                        //reply with drama info
-                        await ctx.reply(ujumb, { parse_mode: 'HTML' })
-
-                        //copy and pin H265
-                        let waikiki_id = -1002192201513
-                        let h265 = await ctx.api.copyMessage(chid, waikiki_id, 5)
-                        await ctx.api.pinChatMessage(chid, h265.message_id)
+                    else if (txt.includes('post_db=')) {
+                        TelegraphPage(ctx)
                     }
 
                     else if (txt.includes('update_id')) {

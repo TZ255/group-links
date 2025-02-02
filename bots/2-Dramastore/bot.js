@@ -360,7 +360,7 @@ const DramaStoreBot = async (app) => {
         })
 
         bot.use(async (ctx, next) => {
-            postEpisodesInChannel(bot, ctx, next, dt, anyErr, axios, cheerio, ph, dramasModel, homeModel, other_channels, nanoid, delay)
+            postEpisodesInChannel(bot, ctx, next, dt, anyErr, delay)
         })
 
         bot.on(':text', async ctx => {
