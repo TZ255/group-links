@@ -131,7 +131,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
   
       // Prepare a caption for a notification message
       let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n` +
-                    `🔔 New episode (${episode_post.quality}) with English subtitles just uploaded 🔥\n\n` +
+                    `🔔 New episode with English subtitles just uploaded 🔥\n\n` +
                     `<b>🔗 Check it Out!\nwww.dramastore.net/new/episodes</b>`;
   
       // Send a notification message to the designated channel if notifications are enabled.
