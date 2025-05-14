@@ -236,7 +236,7 @@ const DramaStoreBot = async (app) => {
         })
 
         bot.command('convo', async ctx => {
-            BroadcastConvoFn(bot, ctx, dt)
+            BroadcastConvoFn(bot, ctx, dt).catch(e => console.log(e?.message))
         })
 
         bot.command('stats', async ctx => {
