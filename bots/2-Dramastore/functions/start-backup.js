@@ -73,7 +73,6 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
                     //update channel count
                     await dramasModel.findOneAndUpdate({ chan_id: ep_doc.drama_chan_id }, { $inc: { timesLoaded: 30, thisMonth: 29, thisWeek: 29, today: 29 } })
-                    console.log(ep_doc.drama_name + ' 30 loaded added')
 
                     //check if user available to db
                     let user = await usersModel.findOne({ userId: ctx.chat.id })
