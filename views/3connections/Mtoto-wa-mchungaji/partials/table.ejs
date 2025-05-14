@@ -1,0 +1,50 @@
+<table class="table table-striped caption-top table-light table-bordered" id="telegram">
+    <caption>Channel na Magroup ya Connection ya Video ya Mtoto wa Mchungaji WhatsApp na Telegram</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of mchungaji_db ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.title %></td>
+            <td class="link">
+                <span class="ch-link" onclick="window.open('/tg/join/channel/<%= g.alias %>')">
+                    JOIN
+                    <i class="fa-brands fa-telegram"></i>
+                </span>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<br><br><br>
+
+<table class="table table-striped caption-top table-light table-bordered" id="whatsapp">
+    <caption>Channel na Magroup ya Connection ya Video ya Irene Uwoya WhatsApp</caption>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Group/Channel</th>
+            <th scope="col" class="link">Join Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for( let g of mchungaji_db ) { %>
+        <tr>
+            <th scope="row"><%= g.id %></th>
+            <td><%= g.title %></td>
+            <td class="link">
+                <span class="ch-link" onclick="window.open('/tg/join/channel/<%= g.alias %>')">
+                    JOIN
+                    <i class="fa-brands fa-whatsapp"></i>
+                </span>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>

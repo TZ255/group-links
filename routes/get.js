@@ -48,12 +48,13 @@ router.get('/michezo', async (req, res) => {
     }
 })
 
-router.get('/connection/:msanii', async (req, res) => {
+router.get('/connection/:msanii', async (req, res, next) => {
     try {
         let msanii = req.params.msanii
         let aslay_db = require('../jsons/connection/aslay.json')
         let haji_db = require('../jsons/connection/haji.json')
         let uwoya_db = require('../jsons/connection/uwoya.json')
+        let mchungaji_db = require('../jsons/connection/mchungaji.json')
 
         switch (msanii) {
             case 'aslay':
@@ -65,9 +66,11 @@ router.get('/connection/:msanii', async (req, res) => {
             case 'uwoya':
                 res.render('3connections/Uwoya/uwoya', { uwoya_db })
                 break;
+            case "mtoto-wa-mchungaji":
+                return res.render('3connections/Mtoto-wa-mchungaji/index', { mchungaji_db })
 
             default:
-                res.redirect('/')
+                next()
         }
 
     } catch (err) {
@@ -77,14 +80,15 @@ router.get('/connection/:msanii', async (req, res) => {
 
 router.get('/tg/join/channel/:alias', async (req, res) => {
     try {
-        res.redirect('https://telegram.me/+y3T6eyZwEQk3NzU8')
+        res.set('X-Robots-Tag', 'noindex, nofollow');
+        res.redirect(302, 'https://telegram.me/+y3T6eyZwEQk3NzU8')
     } catch (err) {
         console.log(err.message)
     }
 })
 
 router.get('*', (req, res) => {
-    res.status(401).send(`Link hii haipo. Rudi kwenye tovuti kuu kwa kubonyeza <a href="/">HAPA</a>`)
+    res.status(404).send(`Link hii haipo. Rudi kwenye tovuti kuu kwa kubonyeza <a href="/">HAPA</a>`)
 })
 
 module.exports = router
