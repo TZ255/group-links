@@ -58,7 +58,6 @@ module.exports = async (bot, ctx, dt, anyErr, other_channels) => {
             if (cname.includes('Official -')) {
                 let dname = cname.split('Official - ')[1].trim()
                 await newDramas.findOneAndUpdate({ newDramaName: dname }, { $inc: { timesLoaded: 30 } })
-                console.log('30 times loaded added to - ' + dname)
             }
 
             ctx.answerCallbackQuery({
