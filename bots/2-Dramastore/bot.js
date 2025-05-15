@@ -33,7 +33,7 @@ const dt = {
     ds: -1001245181784,
     databaseChannel: -1001239425048,
     backup: -1002250839443,
-    subsDb: '-1001570087172',
+    subsDb: '-1002634850653',
     whats: process.env.WHATS,
     dstore_domain: 'https://dramastore.net',
     main_channel: `https://t.me/+mTx_t-6TBx9hNTc8`,
@@ -55,7 +55,7 @@ const dt = {
     serendepity: -1002169508218,
     link: process.env.BOT_LINK,
     aliProducts: -1002494520726,
-    matangazoDB: -1001570087172
+    rtcopyDB: -1002634850653
 }
 
 
