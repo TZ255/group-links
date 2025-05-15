@@ -19,15 +19,42 @@ const BroadcastConvoFn = async (bot, ctx, dt) => {
     const bads = ['deactivated', 'blocked', 'initiate', 'chat not found'];
 
     try {
-        const all_users = await usersModel.find().select({ userId: 1, _id: 0 });
-        const chatIds = all_users.map(user => user.userId).filter(id => !wapuuzi.includes(id));
+        const count = await usersModel.countDocuments();
+        const cursor = usersModel.find().select('userId -_id').cursor();
 
-        await ctx.reply(`🚀 Starting broadcasting for ${chatIds.length} users`);
+        await ctx.reply(`🚀 Starting broadcasting for ${count} users`);
 
-        const batchSize = 20;
-        for (let i = 0; i < chatIds.length; i += batchSize) {
-            const batch = chatIds.slice(i, i + batchSize);
+        let batch = [];
+        for await (const user of cursor) {
+            const chatid = user.userId;
+            if (wapuuzi.includes(chatid)) continue;
 
+            batch.push(chatid);
+
+            if (batch.length === 20) {
+                await Promise.all(batch.map(async (chatid) => {
+                    try {
+                        await bot.api.copyMessage(chatid, rtcopyDB, msg_id);
+                    } catch (err) {
+                        const errorMsg = err?.message?.toLowerCase() || '';
+                        console.log(err?.message || 'Unknown error');
+
+                        if (bads.some((b) => errorMsg.includes(b))) {
+                            await usersModel.findOneAndDelete({ userId: chatid });
+                            console.log(`🗑 User ${chatid} deleted for ${errorMsg}`);
+                        } else {
+                            console.log(`🤷‍♂️ Unexpected error for ${chatid}: ${err.message}`);
+                        }
+                    }
+                }));
+
+                batch = []; // Reset batch
+                await sleep(1000); // Wait 1 second between batches
+            }
+        }
+
+        // Handle remaining users in the last batch (if any)
+        if (batch.length > 0) {
             await Promise.all(batch.map(async (chatid) => {
                 try {
                     await bot.api.copyMessage(chatid, rtcopyDB, msg_id);
@@ -43,8 +70,6 @@ const BroadcastConvoFn = async (bot, ctx, dt) => {
                     }
                 }
             }));
-
-            await sleep(1000); // Wait 1 second between batches
         }
 
         return await ctx.reply('✅ Finished broadcasting');
