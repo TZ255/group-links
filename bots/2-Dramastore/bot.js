@@ -392,7 +392,7 @@ const DramaStoreBot = async (app) => {
         })
 
         //scrap nkiri every five minutes
-        setInterval(() => {
+        setInterval(async () => {
             //new links on dt.ali every even hours (12 links a day)
             let d = new Date()
             let mins = d.getMinutes()
@@ -403,11 +403,7 @@ const DramaStoreBot = async (app) => {
             if (mins == 27 && hrs % 2 == 0) {
                 let name = `${d.getDate()}/${d.getMonth() + 1} - ${hrs}:${mins}`
                 let expire = stampSeconds + (60 * 60 * 4) //4 hours
-                createChatInviteLink(bot, dt, name, expire).catch(e => console.log(e.message))
-                    .then(() => {
-                        bot.api.sendMessage(dt.shd, 'New link created')
-                            .catch(e => console.log(e.message))
-                    })
+                createChatInviteLink(bot, dt, name, expire)
             }
 
             //run nkiri

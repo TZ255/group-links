@@ -12,9 +12,11 @@ const createChatInviteLink = async (bot, dt, name, expire) => {
             link: new_link.invite_link, channel: 'Ali DB - Backup'
         })
     } catch (error) {
-        console.log(error.message)
+        console.log(error?.message)
+        bot.api.sendMessage(dt.shd, `Error creating invite link: ${error?.message}`)
+            .catch(e => console.log(e?.message))
     }
 }
 
 
-module.exports = {createChatInviteLink}
+module.exports = { createChatInviteLink }
