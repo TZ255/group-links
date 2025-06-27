@@ -29,13 +29,13 @@ module.exports = async (bot, ctx, dt, anyErr) => {
         await bot.api.sendMessage(dt.htlt, `<b>${txt}</b> \n\nfrom = <code>${username}</code>\nid = <code>${userid}</code>&mid=${mid}`, { parse_mode: 'HTML', disable_notification: true })
 
         //elekeza kutafuta drama
-        const msg = `Looking for drama? Click the button below to explore on <b>Dramastore</b>. \n\nNeed help? Just reach out to @shemdoe`
+        const msg = `Looking for drama? Click the button below to explore on <b>Dramastore</b> website. \n\nNeed help? Just reach out to @shemdoe`
         await ctx.reply(msg, {
             parse_mode: 'HTML',
             reply_markup: {
                 inline_keyboard: [
                     [
-                        { text: '🔍 Find', url: 'https://dramastore.net/list/all' },
+                        { text: '🔍 Find drama', url: 'https://dramastore.net/list/all' },
                     ]
                 ]
             }

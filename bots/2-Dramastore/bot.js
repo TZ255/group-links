@@ -323,18 +323,30 @@ const DramaStoreBot = async (app) => {
         })
 
         //help command
-        bot.command('help', ctx => {
-            let ptsUrl = `http://dramastore.net/user/${ctx.chat.id}/boost/`
-            let ptsKeybd = [
-                { text: '🥇 My Points', callback_data: 'mypoints' },
-                { text: '➕ Add points', url: ptsUrl }
-            ]
+        bot.command('help', async ctx => {
+            try {
+                const msg = `Looking for drama? Click the *"🔍 Find drama"* button below to explore on *Dramastore* website. \n\nNeed help? Just reach out to *@shemdoe*`
+                
+                let inline_keyboard = [
+                    [
+                        { text: '🥇 My Points', callback_data: 'mypoints' },
+                        { text: '➕ Add points', url: `http://dramastore.net/user/${ctx.chat.id}/boost/` }
+                    ],
+                    [
+                        { text: '🔍 Find drama', url: 'https://dramastore.net/list/all' },
+                    ]
+                ]
 
-            ctx.reply(`If you have issues regarding using me please contact my developer @shemdoe`, {
-                reply_markup: {
-                    inline_keyboard: [ptsKeybd]
-                }
-            }).catch(e => console.log(e.message))
+                await ctx.reply(msg, {
+                    parse_mode: 'MarkdownV2',
+                    reply_markup: {
+                        inline_keyboard
+                    }
+                })
+            } catch (error) {
+                await ctx.reply(`Oops! An error occurred while processing your request. Please forward this message to @shemdoe`)
+                console.error(error.message, error);
+            }
         })
 
         bot.command('backup', async ctx => {
@@ -345,9 +357,9 @@ const DramaStoreBot = async (app) => {
                 for (let [index, ep] of all.entries()) {
                     setTimeout(() => {
                         bot.api.copyMessage(backup_channel, dt.databaseChannel, ep.epid)
-                        .then((success)=> {
-                            episodesModel.findOneAndUpdate({epid: ep.epid}, {$set: {backup: success.message_id}}).catch(e => console.log(e?.message))
-                        }).catch(e => console.log(e.message))
+                            .then((success) => {
+                                episodesModel.findOneAndUpdate({ epid: ep.epid }, { $set: { backup: success.message_id } }).catch(e => console.log(e?.message))
+                            }).catch(e => console.log(e.message))
                     }, 3500 * index)
                 }
             } catch (error) {
