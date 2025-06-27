@@ -325,8 +325,8 @@ const DramaStoreBot = async (app) => {
         //help command
         bot.command('help', async ctx => {
             try {
-                const msg = `Looking for drama? Click the *"🔍 Find drama"* button below to explore on *Dramastore* website. \n\nNeed help? Just reach out to *@shemdoe*`
-                
+                const msg = `Looking for drama? Click the <b>"🔍 Find drama"</b> button below to explore on <b>Dramastore</b> website. \n\nNeed help? Just reach out to <b>@shemdoe</b>`
+
                 let inline_keyboard = [
                     [
                         { text: '🥇 My Points', callback_data: 'mypoints' },
@@ -338,7 +338,7 @@ const DramaStoreBot = async (app) => {
                 ]
 
                 await ctx.reply(msg, {
-                    parse_mode: 'MarkdownV2',
+                    parse_mode: 'HTML',
                     reply_markup: {
                         inline_keyboard
                     }
