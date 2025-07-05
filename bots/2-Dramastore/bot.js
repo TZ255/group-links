@@ -268,16 +268,16 @@ const DramaStoreBot = async (app) => {
                     let updt = await usersModel.findOneAndUpdate({ userId: id }, { $inc: { points: pts } }, { new: true })
 
                     if (param == 'e') {
-                        let t1 = `Shemdoe just added ${pts} points to you. Your new points balance is ${updt.points} points.`
+                        let t1 = `Shemdoe just added ${pts} points to you. Your new points balance is ${updt?.points} points.`
                         await bot.api.sendMessage(id, t1)
                     }
 
                     else if (param == 's') {
-                        let t2 = `Shemdoe amekuongezea points ${pts}. Sasa umekuwa na jumla ya points ${updt.points}... Karibu sana! 😉.`
+                        let t2 = `Shemdoe amekuongezea points ${pts}. Sasa umekuwa na jumla ya points ${updt?.points}... Karibu sana! 😉.`
                         await bot.api.sendMessage(id, t2)
                     }
 
-                    await ctx.reply(`Added, she has now ${updt.points}`)
+                    await ctx.reply(`Added, she has now ${updt?.points}`)
                 } catch (err) {
                     console.log(err.message)
                     ctx.reply(err.message)

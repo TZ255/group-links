@@ -194,13 +194,13 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
                 //if user exist
                 else {
-                    if (user.points > 1) {
+                    if (user?.points > 1) {
                         //send episode
                         sendEp(bot, ctx)
 
                         let upd = await usersModel.findOneAndUpdate({ userId: ctx.chat.id }, { $inc: { points: -2, downloaded: 1 } }, { new: true })
 
-                        let uj_pts = upd.points
+                        let uj_pts = upd?.points
                         let ujumbe1 = `You got the file and 2 points deducted from your points balance.\n\n<b>You remained with ${uj_pts} points.</b>`
 
                         let ujumbe2 = `You got the file and 2 points deducted from your points balance.\n\n<b>You remained with ${uj_pts} points.</b>`
@@ -224,7 +224,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                         }
                     }
 
-                    if (user.points < 2) {
+                    if (user?.points < 2) {
                         await ctx.reply(`You don't have enough points to get this file, you need at least 2 points.\n\nFollow this link to add more http://dramastore.net/user/${ctx.chat.id}/boost or click the button below.`, {
                             reply_markup: { inline_keyboard: [ptsKeybd] }
                         })

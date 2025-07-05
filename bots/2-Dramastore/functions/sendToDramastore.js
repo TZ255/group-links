@@ -73,10 +73,10 @@ module.exports = async (bot, ctx, dt, anyErr, other_channels) => {
             let user = await usersModel.findOne({ userId: chatId })
 
             // for spellings, if remain one remove s
-            if (user.points == 1) {
-                txt = `${user.fname}\n\nTotal downloaded episodes: ${user.downloaded}\n\nYou have ${user.points} point.\n\nClick "➕ Add points button" to increase your points.`
+            if (user?.points == 1) {
+                txt = `${user.fname}\n\nTotal downloaded episodes: ${user.downloaded}\n\nYou have ${user?.points} point.\n\nClick "➕ Add points button" to increase your points.`
             } else {
-                txt = `${user.fname}\n\nTotal downloaded episodes: ${user.downloaded}\n\nYou have ${user.points} points.\n\nClick "➕ Add points button" to increase your points.`
+                txt = `${user.fname}\n\nTotal downloaded episodes: ${user.downloaded}\n\nYou have ${user?.points} points.\n\nClick "➕ Add points button" to increase your points.`
             }
 
 
