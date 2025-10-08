@@ -4,7 +4,7 @@ const nkiriDB = require('../models/nkiri')
 
 const nkiriFetch = async (dt, bot) => {
     try {
-        let url = 'http://nkiri.com/'
+        let url = 'http://nkiri.ink/'
         let html = await axios.get(url)
         let $ = cheerio.load(html.data)
 
