@@ -329,14 +329,14 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
         // Extract invite link, URL and drama ID from the text
         let invite_link = info.invite_link;
 
-        let ddl = `http://dramastore.net/download/movie/option2/${_id}/shemdoe`
+        let ddl = `http://dramastore.net/download/movie/option2/${mv_id}/shemdoe`
 
         // Send a message to the designated chat using the bot API
         await ctx.reply(ujumb, {
             parse_mode: 'HTML',
             link_preview_options: {
-                prefer_small_media: true,
-                show_above_text: true
+                prefer_large_media: true,
+                show_above_text: false
             },
             reply_markup: {
                 inline_keyboard: [
@@ -346,16 +346,18 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
         });
 
         // backup
-        const backup = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(movie.msgId));
-        movie.backup = backup.message_id
-        await movie.save()
+        if (!movie.backup) {
+            const backup = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(movie.msgId));
+            movie.backup = backup.message_id
+            await movie.save()
+        }
 
         // Prepare a caption for a notification message
-        let caption = `<b>🎬 ${movie.movie_name}</b>\n\n🔔 New movie with English subtitles just uploaded 🔥\n\n<b>🔗 Download Now!\n<a href="${invite_link}">https://t.me/download/${movie._id}</a></b>`;
+        let caption = `<b>🔔 Movie | ${movie.movie_name}\n\n🔗 Download Now!\n<a href="${invite_link}">https://t.me/download/${movie.nano}</a></b>`;
 
-        await bot.api.sendMessage(dt.shd, caption, {
-          parse_mode: 'HTML',
-          link_preview_options: { is_disabled: true },
+        await bot.api.sendDocument(dt.aliProducts, movie.coverUrl, {
+            parse_mode: 'HTML',
+            caption
         });
 
         //delete message

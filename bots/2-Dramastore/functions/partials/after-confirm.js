@@ -3,11 +3,17 @@ const episodesModel = require('../../models/vue-new-episode')
 const nextEpModel = require('../../models/botnextEp')
 const usersModel = require('../../models/botusers')
 const inviteModel = require('../../models/invitelink')
+const movieModel = require('../../models/movieModel')
 
-const UpdateChanUser = async (ctx, ep_doc, conf_msgid) => {
+const UpdateChanUser = async (ctx, ep_doc, conf_msgid, isMovie = false) => {
     try {
         //update channel count
-        await dramasModel.findOneAndUpdate({ chan_id: ep_doc.drama_chan_id }, { $inc: { timesLoaded: 30, thisMonth: 29, thisWeek: 29, today: 29 } })
+        if (isMovie === false) {
+            await dramasModel.findOneAndUpdate({ chan_id: ep_doc.drama_chan_id }, { $inc: { timesLoaded: 30, thisMonth: 29, thisWeek: 29, today: 29 } })
+        } else {
+            await movieModel.findByIdAndUpdate(ep_doc._id, { $inc: { timesLoaded: 1 } })
+        }
+        
 
         //check if user available to db
         let user = await usersModel.findOne({ userId: ctx.chat.id })

@@ -79,9 +79,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     }
 
                     let cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}\n\n⭐️ Find More K-Dramas at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
-                    if (muxed == '#English Soft-subbed') {
-                        cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}</b>\n\n<i>- This ep. is soft-subbed, use VLC or MX Player to see subtitles</i>`
-                    } else if (noEp === "MOVIE" && String(fileName).includes('MOVIE.')) {
+
+                    if (noEp === "MOVIE" && String(fileName).includes('MOVIE.')) {
                         cap = `<b>${String(fileName).split('MOVIE.')[1]}\n\n⭐️ More K-Dramas & Movies at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
                     }
 

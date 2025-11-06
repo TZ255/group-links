@@ -126,7 +126,8 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                 })
 
                 //upadate drama count & user
-                UpdateChanUser(ctx, ep_doc, conf_msg.message_id)
+                let isMovie = true
+                UpdateChanUser(ctx, movie, conf_msg.message_id, isMovie)
             }
 
             if (payload.includes('fromWeb')) {
