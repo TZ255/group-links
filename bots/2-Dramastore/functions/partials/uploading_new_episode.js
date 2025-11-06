@@ -7,7 +7,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
       // Parse the text command to extract parameters.
       // Expected format: some_text_part_ep_EpisodeNumber_size_info_epMsgId_info, etc.
       let data = txt.split('_');
-      
+
       // Get the episode number (e.g. if data[3] is "E05", ep becomes "05")
       let ep = data[3].match(/E(\d+)/)[1];
   
@@ -130,7 +130,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
       );
   
       // Prepare a caption for a notification message
-      let caption = `<b>🔔 New Episode | ${episode_post.drama_name.split('(20')[0].trim()} - Episode ${episode_post.epno}\n\n🔗 Download Now!\n<a href="https://${dt.link}marikiID-${episode_post._id}">https://t.me/download/${Date.now().toString(36)}</a></b>`;
+      let caption = `<b>🔥 New Episode | ${episode_post.drama_name.split('(20')[0].trim()} - Episode ${episode_post.epno}\n\n🔗 Check it Out!\n<a href="${query.tgChannel}">${query.tgChannel.replace('tg:', 'https:')}</a></b>`;
 
       // Send a notification message to the designated channel if notifications are enabled.
       if (query.notify === true) {
