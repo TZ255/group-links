@@ -329,7 +329,8 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
         // Extract invite link, URL and drama ID from the text
         let invite_link = info.invite_link;
 
-        let ddl = `http://dramastore.net/download/movie/option2/${mv_id}/shemdoe`
+        let ddl2 = `http://dramastore.net/download/movie/option2/${mv_id}/shemdoe`
+        let ddl = `https://${dt.link}KMOVIE-${movie._id}`
 
         // Send a message to the designated chat using the bot API
         await ctx.reply(ujumb, {
@@ -340,10 +341,20 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
             },
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: '⬇ DOWNLOAD MOVIE', url: ddl }],
+                    [{ text: '📥 DOWNLOAD NOW', url: ddl }],
+                    [
+                        { text: '📥 LINK #2', url: ddl2 },
+                        { text: '💡 Help', callback_data: 'newHbtn2' },
+                    ],
                 ],
             },
         });
+
+        //edit the movie on db channel
+        const new_caption = `<b>${movie.movie_name}</b> with English Subtitles \n\n<b>⭐️Find More KDrama & Movies at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
+        await bot.api.editMessageCaption(dt.databaseChannel, Number(movie.msgId), {
+            caption: new_caption, parse_mode: 'HTML'
+        }).catch(e => { console.log(e?.message, e) })
 
         // backup
         if (!movie.backup) {
@@ -353,7 +364,7 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
         }
 
         // Prepare a caption for a notification message
-        let caption = `<b>🔔 Movie | ${movie.movie_name}\n\n🔗 Download Now!\n<a href="${invite_link}">https://t.me/download/${movie.nano}</a></b>`;
+        let caption = `New Movie Uploaded 🔥\n<b>${movie.movie_name}\n\n🔗 Check it Out!\n<a href="${invite_link}">https://t.me/download/${movie.nano}</a></b>`;
 
         await bot.api.sendDocument(dt.aliProducts, movie.coverUrl, {
             parse_mode: 'HTML',
