@@ -129,13 +129,13 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
       );
   
       // Prepare a caption for a notification message
-      let caption = `<b>🎥 ${episode_post.drama_name} - Episode ${episode_post.epno}</b>\n\n🔔 New episode with English subtitles just uploaded 🔥\n\n<b>🔗 Download Now!\n<a href="https://${dt.link}marikiID-${episode_post._id}">https://t.me/download/${episode_post._id}</a></b>`;
+      let caption = `<b>🔔 New Episode | ${episode_post.drama_name.split('(20')[0].trim()} - Episode ${episode_post.epno}\n\n🔗 Download Now!\n<a href="https://${dt.link}marikiID-${episode_post._id}">https://t.me/download/${Date.now().toString(36)}</a></b>`;
 
       // Send a notification message to the designated channel if notifications are enabled.
       if (query.notify === true) {
-        await bot.api.sendMessage(dt.aliProducts, caption, {
+        await bot.api.sendDocument(dt.aliProducts, query.coverUrl, {
           parse_mode: 'HTML',
-          link_preview_options: { is_disabled: true },
+          caption
         });
       }
   
