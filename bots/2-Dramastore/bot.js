@@ -55,7 +55,8 @@ const dt = {
     serendepity: -1002169508218,
     link: process.env.BOT_LINK,
     aliProducts: -1002494520726,
-    rtcopyDB: -1002634850653
+    rtcopyDB: -1002634850653,
+    dstore_movies: -1003274804808
 }
 
 

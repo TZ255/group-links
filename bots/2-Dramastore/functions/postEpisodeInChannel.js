@@ -2,7 +2,7 @@ const vueNewDramaModel = require('../models/vue-new-drama')
 const episodesModel = require('../models/vue-new-episode')
 const postModel = require('../models/postmodel')
 const usersModel = require('../models/botusers')
-const {scrapeMyDramalist, scrapeAsianWiki, TelegraphPage} = require('./partials/scrapingdrama')
+const {scrapeMyDramalist, scrapeAsianWiki, TelegraphPage, TelegraphMoviePage} = require('./partials/scrapingdrama')
 const UploadingNewEpisode = require('./partials/uploading_new_episode')
 
 module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
@@ -28,6 +28,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                         noEp = fileName.split('[dramastore.net] ')[1].split('.')[0]
                     } else if (fileName.includes('@dramaost.')) {
                         noEp = fileName.split('@dramaost.E')[1].split('.')[0]
+                    } else if (fileName.includes('[dramastore.net] MOVIE.')) {
+                        noEp = "MOVIE"
                     }
 
                     if (fileName.toLowerCase().includes('480p.web')) {
@@ -79,6 +81,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     let cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}\n\n⭐️ Find More K-Dramas at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
                     if (muxed == '#English Soft-subbed') {
                         cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}</b>\n\n<i>- This ep. is soft-subbed, use VLC or MX Player to see subtitles</i>`
+                    } else if (noEp === "MOVIE" && String(fileName).includes('MOVIE.')) {
+                        cap = `<b>${String(fileName).split('MOVIE.')[1]}\n\n⭐️ More K-Dramas & Movies at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
                     }
 
                     if (extraParams == 'NN=') {
@@ -89,7 +93,10 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                         caption: cap, parse_mode: 'HTML'
                     })
 
-                    ctx.reply(`Copy -> <code>uploading_new_episode_${noEp}_S${netSize}_msgId${msgId}_${extraParams}</code>`, { parse_mode: 'HTML' })
+                    let copy_data = `<code>uploading_new_episode_${noEp}_S${netSize}_msgId${msgId}_${extraParams}</code>`
+                    if(noEp === "MOVIE") copy_data = `<code>${msgId}</code>`;
+
+                    ctx.reply(`Copy -> ${copy_data}`, { parse_mode: 'HTML' })
                 }
             }
 
@@ -113,6 +120,10 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
 
                     else if (txt.includes('post_db=')) {
                         TelegraphPage(bot, ctx, dt)
+                    }
+
+                    else if (txt.includes('post_movie=')) {
+                        TelegraphMoviePage(bot, ctx, dt)
                     }
 
                     else if (txt.includes('update_id')) {

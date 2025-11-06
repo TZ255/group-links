@@ -6,7 +6,6 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
     try {
       // Parse the text command to extract parameters.
       // Expected format: some_text_part_ep_EpisodeNumber_size_info_epMsgId_info, etc.
-      let data = txt.split('_');
   
       // Get the episode number (e.g. if data[3] is "E05", ep becomes "05")
       let ep = data[3].match(/E(\d+)/)[1];

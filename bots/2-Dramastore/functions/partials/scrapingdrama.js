@@ -6,6 +6,7 @@ const telegraph = require('telegraph-node');
 const ph = new telegraph()
 const dramasModel = require('../../models/vue-new-drama');
 const homeModel = require('../../models/vue-home-db');
+const movieModel = require('../../models/movieModel');
 
 
 const scrapeMyDramalist = async (ctx, txt, dt, bot) => {
@@ -260,7 +261,7 @@ const TelegraphPage = async (bot, ctx, dt) => {
         let text = ctx.channelPost.text
         let _id = text.split('=')[1]
         let drama = await dramasModel.findById(_id)
-        if(!drama) return await ctx.reply('No drama found for the given ID');
+        if (!drama) return await ctx.reply('No drama found for the given ID');
 
         // Format the message to send via Telegram
         let ujumb = `<a href="${drama.telegraph}">🇰🇷 </a><u><b>${drama.newDramaName}</b></u>`;
@@ -311,8 +312,63 @@ const TelegraphPage = async (bot, ctx, dt) => {
     }
 }
 
+const TelegraphMoviePage = async (bot, ctx, dt) => {
+    try {
+        let text = ctx.channelPost.text
+        let mv_id = text.split('=')[1].trim()
+        let movie = await movieModel.findById(mv_id)
+        if (!movie) return await ctx.reply(`No Movie found for the given ID: ${mv_id}`);
+
+        // Format the message to send via Telegram
+        let ujumb = `<a href="${movie.telegraph}">🎬 </a><u><b>${movie.movie_name}</b></u>`;
+
+        // Get the channel id from the context (if using channel posts)
+        let chid = ctx.channelPost.chat.id;
+        // Get additional channel info
+        let info = await bot.api.getChat(chid);
+        // Extract invite link, URL and drama ID from the text
+        let invite_link = info.invite_link;
+
+        let ddl = `http://dramastore.net/download/movie/option2/${_id}/shemdoe`
+
+        // Send a message to the designated chat using the bot API
+        await ctx.reply(ujumb, {
+            parse_mode: 'HTML',
+            link_preview_options: {
+                prefer_small_media: true,
+                show_above_text: true
+            },
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '⬇ DOWNLOAD MOVIE', url: ddl }],
+                ],
+            },
+        });
+
+        // backup
+        const backup = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(movie.msgId));
+        movie.backup = backup.message_id
+        await movie.save()
+
+        // Prepare a caption for a notification message
+        let caption = `<b>🎬 ${movie.movie_name}</b>\n\n🔔 New movie with English subtitles just uploaded 🔥\n\n<b>🔗 Download Now!\n<a href="${invite_link}">https://t.me/download/${movie._id}</a></b>`;
+
+        await bot.api.sendMessage(dt.shd, caption, {
+          parse_mode: 'HTML',
+          link_preview_options: { is_disabled: true },
+        });
+
+        //delete message
+        await ctx.api.deleteMessage(chid, ctx.channelPost.message_id)
+    } catch (error) {
+        await ctx.reply(`Error: ${error?.message}`)
+        console.log("Movie Post Error:", error)
+    }
+}
+
 module.exports = {
     scrapeMyDramalist,
     scrapeAsianWiki,
-    TelegraphPage
+    TelegraphPage,
+    TelegraphMoviePage
 }

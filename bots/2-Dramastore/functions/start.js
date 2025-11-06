@@ -4,6 +4,7 @@ const nextEpModel = require('../models/botnextEp')
 const usersModel = require('../models/botusers')
 const inviteModel = require('../models/invitelink')
 const { UpdateChanUser } = require('./partials/after-confirm')
+const movieModel = require('../models/movieModel')
 
 module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
@@ -98,6 +99,34 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     //upadate drama count & user
                     UpdateChanUser(ctx, ep_doc, conf_msg.message_id)
                 }
+            }
+
+            if (payload.includes('KMOVIE-')) {
+                let movie_id = payload.split('KMOVIE-')[1]
+
+                //find the document
+                let movie = await movieModel.findById(movie_id)
+
+                if(!movie) return ctx.reply('This movie is not found')
+
+                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}</b>\n\n<code>Confirm 👇</code>`
+                let url = `http://dramastore.net/download/episode?ep_id=${movie._id}--movie&userid=${ctx.chat.id}`
+
+                //reply with episodes info
+                let conf_msg = await ctx.reply(txt, {
+                    parse_mode: 'HTML',
+                    protect_content: true,
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                { text: "⬇ GO TO DOWNLOAD PAGE", url }
+                            ]
+                        ]
+                    }
+                })
+
+                //upadate drama count & user
+                UpdateChanUser(ctx, ep_doc, conf_msg.message_id)
             }
 
             if (payload.includes('fromWeb')) {
