@@ -19,8 +19,6 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     let SizeInMB = (fileZize / (1024 * 1024))
                     let netSize = Math.trunc(SizeInMB)
                     let noEp = ''
-                    let capQty = '540P HDTV H.264'
-                    let muxed = '#English Soft-subbed'
                     let extraParams = ''
 
                     //document spillited with dramastore
@@ -32,60 +30,10 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                         noEp = "MOVIE"
                     }
 
-                    if (fileName.toLowerCase().includes('480p.web')) {
-                        capQty = '480P WEBDL'
-                        extraParams = '480p_WEBDL'
-                    }
-
-                    if (fileName.toLowerCase().includes('480p.hdtv.mp4')) {
-                        capQty = '480P HDTV H.264'
-                        muxed = '#English Hard-subbed (kissasian)'
-                        extraParams = '480p_HDTV_MP4'
-                    }
-
-                    else if (fileName.toLowerCase().includes('540p') && fileName.toLowerCase().includes('webdl')) {
-                        capQty = '540P WEBDL'
-                        extraParams = '540p_WEBDL'
-                    }
-
-                    else if (fileName.toLowerCase().includes('.540p.nk.')) {
-                        capQty = '540P HDTV H.265'
-                        muxed = '#English Hard-subbed'
-                        extraParams = 'NK'
-                    }
-
-                    else if (fileName.toLowerCase().includes('.540p.nn.')) {
-                        capQty = '540P HDTV H.265'
-                        muxed = 'RAW'
-                        extraParams = 'NN='
-                    }
-
-                    else if (fileName.toLowerCase().includes('.480p.nk.')) {
-                        capQty = '480P HDTV H.265'
-                        muxed = '#English Hard-subbed'
-                        extraParams = 'SOJU'
-                    }
-
-                    else if (fileName.toLowerCase().includes('.720p.webdl.')) {
-                        capQty = '720P WEB-DL H.264'
-                        muxed = '#English Soft-subbed'
-                        extraParams = '720p_WEBDL'
-                    }
-
-                    else if (fileName.toLowerCase().includes('.360p.nk.')) {
-                        capQty = '360P HDTV H.264'
-                        muxed = '#English Hard-subbed'
-                        extraParams = 'KIMOI'
-                    }
-
-                    let cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}\n\n⭐️ Find More K-Dramas at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
+                    let cap = `<b>${fileName.replace('[dramastore.net]', '').replace('.mkv', '.EngSub.mkv').trim()}\n\n⭐️ Find More K-Dramas at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
 
                     if (noEp === "MOVIE" && String(fileName).includes('MOVIE.')) {
                         cap = `<b>${String(fileName).split('MOVIE.')[1]}\n\n⭐️ More K-Dramas & Movies at\n<a href="https://t.me/+vfhmLVXO7pIzZThk">@KOREAN_DRAMA_STORE</a></b>`
-                    }
-
-                    if (extraParams == 'NN=') {
-                        cap = `<b>Ep. ${noEp} | ${capQty}  \n${muxed}</b>\n\n<i>- This episode has no subtitle. While playing add the subtitle file below.</i>`
                     }
 
                     await bot.api.editMessageCaption(ctx.channelPost.chat.id, msgId, {
@@ -93,7 +41,8 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     })
 
                     let copy_data = `<code>uploading_new_episode_${noEp}_S${netSize}_msgId${msgId}_${extraParams}</code>`
-                    if(noEp === "MOVIE") copy_data = `<code>${msgId}</code>`;
+
+                    if(noEp === "MOVIE") copy_data = `<code>${msgId}_S${fileZize}</code>`;
 
                     ctx.reply(`Copy -> ${copy_data}`, { parse_mode: 'HTML' })
                 }
