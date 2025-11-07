@@ -25,11 +25,8 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
     let chan_id = ctx.channelPost.sender_chat.id;
 
     // Default quality values and subtitles for captions
-    let quality = '540p HDTV H.264';
     let db_quality = "540p";
-    let subs = '#English Soft-subbed';
     let totalEps = '';
-    let nano = ''; // Placeholder (if needed later)
 
     // Find the drama record for the current channel
     let query = await vueNewDramaModel.findOne({ chan_id });
@@ -48,45 +45,10 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
     }
 
     // Build the episode display word
-    let _ep_word = `📺 Episode ${ep}${totalEps}`;
+    let _ep_word = `📁 Episode: ${ep}${totalEps} (Eng Sub) \n📺 Drama: ${query.newDramaName}`;
 
     // Create a backup of the message by copying it to your database channel.
     let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId));
-
-    // Adjust quality and subtitle settings based on text commands.
-    if (txt.includes('540p_WEBDL')) {
-      quality = '540p WEBDL';
-    } else if (txt.includes('480p_WEBDL')) {
-      quality = '480p WEBDL';
-      // (Optional: set additional parameters if needed)
-      db_quality = "480p";
-    } else if (txt.includes('NK')) {
-      quality = '540p HDTV H.265';
-      subs = '#English Hard-subbed';
-    } else if (txt.includes('NN=')) {
-      quality = '540p HDTV H.265';
-      subs = '#English sub';
-      let subId = txt.split('NN=')[1];
-      epMsgId = `TT${epMsgId}TT${subId}`;
-    } else if (txt.includes('SOJU')) {
-      quality = '480p HDTV H.265';
-      subs = '#English Hard-subbed';
-    } else if (txt.includes('KIMOI')) {
-      quality = '360p HDTV H.264 (kimoiTV)';
-      subs = '#English Hard-subbed';
-    } else if (txt.includes('720p_WEBDL')) {
-      quality = '720p WEBDL';
-      db_quality = "720p";
-    } else if (txt.includes('720p_HDTV')) {
-      quality = '720p HDTV';
-      db_quality = "720p";
-    } else if (txt.includes('1080p_WEDDL')) {
-      quality = '1080p WEBDL';
-      db_quality = "1080p";
-    } else if (txt.includes('dual')) {
-      // For dual episodes, append the next episode number (formatted with two digits)
-      ep = ep + '-' + ('0' + (Number(ep) + 1)).slice(-2);
-    }
 
     // Create or update the episode record in the database.
     let episode_post = await episodesModel.findOneAndUpdate(
@@ -107,7 +69,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
     let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`;
 
     // Send a poll message to the channel asking for quality feedback.
-    const photo_caption = `<b>📁 ${_ep_word} | ${quality} with English subtitles</b> \n\n<blockquote>💡 Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
+    const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>💡 Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
     let poll = await ctx.api.sendDocument(chatId, query.coverUrl, {
       parse_mode: 'HTML',
       caption: photo_caption,
@@ -128,7 +90,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
     });
 
     // Prepare a caption for a notification message
-    let caption = `New Episode Uploaded\n<b>${episode_post.drama_name.split('(20')[0].trim()} - Episode ${episode_post.epno}\n\n🔗 Check it Out!\n<a href="${query.tgChannel}">${query.tgChannel.replace('tg:', 'https:')}</a></b>`;
+    let caption = `<blockquote>New Episode Uploaded 🔥</blockquote>\n<b>${episode_post.drama_name.split('(20')[0].trim()} - Episode ${episode_post.epno}\n\n🔗 Check it Out!\n<a href="${query.tgChannel}">${query.tgChannel.replace('tg://join?invite=', 'https://t.me/+')}</a></b>`;
 
     // Send a notification message to the designated channel if notifications are enabled.
     if (query.notify === true) {
