@@ -2,7 +2,7 @@ const vueNewDramaModel = require('../../models/vue-new-drama');
 const episodesModel = require('../../models/vue-new-episode');
 const usersModel = require('../../models/botusers');
 
-const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
+const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
   try {
     // Parse the text command to extract parameters.
     // Expected format: some_text_part_ep_EpisodeNumber_size_info_epMsgId_info, etc.
@@ -70,14 +70,16 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot) => {
 
     // Send a poll message to the channel asking for quality feedback.
     const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>💡 Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
-    let poll = await ctx.api.sendDocument(chatId, query.coverUrl, {
+    const photoFile = new InputFile(new URL(query.coverUrl), `${query._id}.jpg`)
+
+    let poll = await ctx.api.sendDocument(chatId, photoFile, {
       parse_mode: 'HTML',
       caption: photo_caption,
       reply_markup: {
         inline_keyboard: [
           [
             {
-              text: `📥 DOWNLOAD NOW (${size})`,
+              text: `📥 DOWNLOAD NOW E${ep} (${size})`,
               url: `https://${dt.link}marikiID-${episode_post._id}`,
             },
           ],

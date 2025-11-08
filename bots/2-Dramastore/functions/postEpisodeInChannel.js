@@ -5,7 +5,7 @@ const usersModel = require('../models/botusers')
 const {scrapeMyDramalist, scrapeAsianWiki, TelegraphPage, TelegraphMoviePage} = require('./partials/scrapingdrama')
 const UploadingNewEpisode = require('./partials/uploading_new_episode')
 
-module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
+module.exports = async (bot, ctx, next, dt, anyErr, delay, InputFile) => {
     try {
         // check if it is used in channel
         if (ctx.update.channel_post) {
@@ -55,7 +55,7 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay) => {
                     let txt = ctx.channelPost.text
                     if (txt.includes('uploading_new_episode')) {
                         // uploading new episode
-                        UploadingNewEpisode(ctx, txt, dt, bot)
+                        UploadingNewEpisode(ctx, txt, dt, bot, InputFile)
                     }
 
                     else if (txt.includes('post_drama')) {

@@ -1,4 +1,4 @@
-const { Bot, webhookCallback, InlineKeyboard, InlineQueryResultBuilder } = require('grammy')
+const { Bot, webhookCallback, InlineKeyboard, InlineQueryResultBuilder, InputFile } = require('grammy')
 const { autoRetry } = require("@grammyjs/auto-retry");
 const { limit } = require("@grammyjs/ratelimiter");
 require('dotenv').config()
@@ -373,7 +373,7 @@ const DramaStoreBot = async (app) => {
         })
 
         bot.use(async (ctx, next) => {
-            postEpisodesInChannel(bot, ctx, next, dt, anyErr, delay)
+            postEpisodesInChannel(bot, ctx, next, dt, anyErr, delay, InputFile)
         })
 
         bot.on(':text', async ctx => {
