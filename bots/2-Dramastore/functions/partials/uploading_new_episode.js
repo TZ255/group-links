@@ -69,7 +69,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
     let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`;
 
     // Send a poll message to the channel asking for quality feedback.
-    const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>💡 Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
+    const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
     const photoFile = new InputFile(new URL(query.coverUrl), `${query._id}.jpg`)
 
     let poll = await ctx.api.sendDocument(chatId, photoFile, {
