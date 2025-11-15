@@ -366,8 +366,9 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
         // Prepare a caption for a notification message
         let caption = `<blockquote>New Movie Uploaded 🔥</blockquote>\n<b>${movie.movie_name}\n\n🔗 Check it Out!\n<a href="${invite_link}">https://t.me/download/${movie.nano}</a></b>`;
 
-        await bot.api.sendMessage(dt.aliProducts, caption, {
-            parse_mode: 'HTML'
+        await bot.api.sendDocument(dt.aliProducts, movie.coverUrl, {
+            parse_mode: 'HTML',
+            caption
         });
 
         //delete message
