@@ -73,7 +73,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
 
     const sanitizeName = query.newDramaName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-    const filename = `episode-${ep}-${sanitizeName}-${Date.now()}`.substring(0, 24) + '.jpg';
+    const filename = `episode-${ep}-${sanitizeName}-${Date.now()}`.substring(0, 32) + '.jpg';
 
     const photoFile = new InputFile(
       new URL(query.coverUrl),
