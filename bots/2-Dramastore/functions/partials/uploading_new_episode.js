@@ -70,7 +70,16 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
 
     // Send a poll message to the channel asking for quality feedback.
     const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
-    const photoFile = new InputFile(new URL(query.coverUrl), `${query._id}.jpg`)
+
+    const sanitizeName = query.newDramaName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+    const filename = `episode-${ep}-${sanitizeName}-${Date.now()}`.substring(0, 24) + '.jpg';
+
+    const photoFile = new InputFile(
+      new URL(query.coverUrl),
+      filename
+    );
+
 
     let poll = await ctx.api.sendDocument(chatId, photoFile, {
       parse_mode: 'HTML',

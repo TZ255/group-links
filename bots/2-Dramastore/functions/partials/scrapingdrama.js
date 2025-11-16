@@ -186,6 +186,9 @@ const scrapeMyDramalist = async (ctx, txt, dt, bot) => {
         if (country === 'China') {
             ujumb = `<a href="${telegraph_link}">🇨🇳 </a><u><b>${dramaName}</b></u>`;
         }
+        if (country === 'Japan') {
+            ujumb = `<a href="${telegraph_link}">🇯🇵 </a><u><b>${dramaName}</b></u>`;
+        }
         if (txt.includes('repost_drama')) {
             ujumb = `#UPDATED\n<a href="${telegraph_link}">🇰🇷 </a><u><b>${dramaName}</b></u>`;
         }
@@ -267,6 +270,9 @@ const TelegraphPage = async (bot, ctx, dt) => {
         let ujumb = `<a href="${drama.telegraph}">🇰🇷 </a><u><b>${drama.newDramaName}</b></u>`;
         if (drama?.country === 'China') {
             ujumb = `<a href="${drama.telegraph}">🇨🇳 </a><u><b>${drama.newDramaName}</b></u>`;
+        }
+        if (drama?.country === 'Japan') {
+            ujumb = `<a href="${drama.telegraph}">🇯🇵 </a><u><b>${drama.newDramaName}</b></u>`;
         }
 
         // Get the channel id from the context (if using channel posts)
