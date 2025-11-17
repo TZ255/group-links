@@ -48,7 +48,7 @@ const ApproveReqs = async (bot, ctx, dt, delay) => {
         if (chan_id == dt.aliProducts) {
             await bot.api.approveChatJoinRequest(chan_id, userid)
             await delay(500)
-            await bot.api.sendMessage(userid, 'Request approved. You can now download the episode.\n\nClick the <b>✅ DONE</b> button above to proceed with your download', { parse_mode: 'HTML' })
+            await bot.api.sendMessage(userid, 'Request approved. You can now download the episode.\n\nClick the <b>✅ JOINED</b> button above to proceed with your download', { parse_mode: 'HTML' })
         } else {
             await bot.api.sendMessage(userid, 'Request approved. You can now download Korean Dramas from Our Channel', { parse_mode: 'HTML' })
             await delay(500)
