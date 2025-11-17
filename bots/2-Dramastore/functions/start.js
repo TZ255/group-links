@@ -16,7 +16,6 @@ const getChatMemberCached = async (bot, channelId, userId) => {
 
     const cachedEntry = chatMemberCache.get(cacheKey)
     if (cachedEntry && now - cachedEntry.timestamp < CHAT_MEMBER_CACHE_TTL) {
-        console.log('Using cached chat member info for userId:', userId)
         return cachedEntry.member
     }
 
