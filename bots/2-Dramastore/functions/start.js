@@ -70,7 +70,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     //find the document
                     let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page to get the episode file.\n\n<code>Here 👇</code>`
+                    let txt = `<b>🤖 <u>Confirm Download</u></b>\n\nYou’re about to download, <b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}</b>.\nPlease continue to the download page.\n\n<code>👇 Click here</code>`
                     let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
                     //reply with episodes info
