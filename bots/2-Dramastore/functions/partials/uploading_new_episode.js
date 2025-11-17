@@ -45,7 +45,7 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
     }
 
     // Build the episode display word
-    let _ep_word = `📁 Episode: ${ep}${totalEps} (Eng Sub) \n📺 Drama: ${query.newDramaName}`;
+    let _ep_word = `<b>📁 Episode:</b> ${ep}${totalEps} (Eng Sub) \n<b>📺 Drama:</b> ${query.newDramaName}`;
 
     // Create a backup of the message by copying it to your database channel.
     let success = await bot.api.copyMessage(dt.backup, dt.databaseChannel, Number(epMsgId));
@@ -69,11 +69,11 @@ const UploadingNewEpisode = async (ctx, txt, dt, bot, InputFile) => {
     let option2 = `http://dramastore.net/download/episode/option2/${episode_post._id}/shemdoe`;
 
     // Send a poll message to the channel asking for quality feedback.
-    const photo_caption = `<b>${_ep_word}</b> \n\n<blockquote>Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
+    const photo_caption = `${_ep_word} \n\n<blockquote>Click <b>Download Now</b>, then <b>Go to Download Page</b> to get the episode</blockquote>`
 
     const sanitizeName = query.newDramaName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-    const filename = `episode-${ep}-${sanitizeName}-${Date.now()}`.substring(0, 32) + '.jpg';
+    const filename = `episode-${ep}-${sanitizeName}-${episode_post._id}`.substring(0, 30) + '.jpg';
 
     const photoFile = new InputFile(
       new URL(query.coverUrl),
