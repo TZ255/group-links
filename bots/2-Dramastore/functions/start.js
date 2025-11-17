@@ -107,7 +107,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                 //find the document
                 let movie = await movieModel.findById(movie_id)
 
-                if(!movie) return ctx.reply('This movie is not found')
+                if(!movie) return ctx.reply('This movie is not found. Contact @shemdoe for assistance.')
 
                 let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}.</b> Please click and open the button below to go to the download page and receive the movie file.\n\n<code>Go Now 👇</code>`
                 let url = `http://dramastore.net/download/episode?ep_id=${movie._id}--movie&userid=${ctx.chat.id}`
