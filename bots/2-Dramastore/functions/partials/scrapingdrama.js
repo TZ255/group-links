@@ -347,7 +347,7 @@ const TelegraphMoviePage = async (bot, ctx, dt) => {
             },
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: `📥 DOWNLOAD NOW (${movie?.file_size || '~200'}) MB`, url: ddl }],
+                    [{ text: `📥 DOWNLOAD NOW (${movie?.file_size || '~200'} MB)`, url: ddl }],
                     [
                         { text: '📥 LINK #2', url: ddl2 },
                         { text: '💡 Help', callback_data: 'newHbtn2' },
