@@ -56,7 +56,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                         //find the document
                         let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                        let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Go Now 👇</code>`
+                        let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Here 👇</code>`
                         let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
                         //reply with episodes info
@@ -80,7 +80,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
                     //find the document
                     let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Go Now 👇</code>`
+                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Here 👇</code>`
                     let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
                     //reply with episodes info
@@ -109,7 +109,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
                 if(!movie) return ctx.reply('This movie is not found. Contact @shemdoe for assistance.')
 
-                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}.</b> Please click and open the button below to go to the download page and receive the movie file.\n\n<code>Go Now 👇</code>`
+                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}.</b> Please click and open the button below to go to the download page and receive the movie file.\n\n<code>Here 👇</code>`
                 let url = `http://dramastore.net/download/episode?ep_id=${movie._id}--movie&userid=${ctx.chat.id}`
 
                 //reply with episodes info

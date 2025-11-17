@@ -47,7 +47,7 @@ const UpdateChanUser = async (ctx, ep_doc, conf_msgid, isMovie = false) => {
             ctx.api.editMessageText(ctx.chat.id, conf_msgid, invite_msg, {
                 parse_mode: 'HTML', link_preview_options: { is_disabled: true }
             }).catch(e => console.log(e?.message))
-        }, 20000)
+        }, 30000)
     } catch (error) {
         console.log(error.message)
     }
