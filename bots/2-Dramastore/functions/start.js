@@ -6,6 +6,25 @@ const inviteModel = require('../models/invitelink')
 const { UpdateChanUser } = require('./partials/after-confirm')
 const movieModel = require('../models/movieModel')
 
+// Cache membership checks (4h) so we don't spam Telegram
+const CHAT_MEMBER_CACHE_TTL = 4 * 60 * 60 * 1000
+const chatMemberCache = new Map()
+
+const getChatMemberCached = async (bot, channelId, userId) => {
+    const cacheKey = userId
+    const now = Date.now()
+
+    const cachedEntry = chatMemberCache.get(cacheKey)
+    if (cachedEntry && now - cachedEntry.timestamp < CHAT_MEMBER_CACHE_TTL) {
+        console.log('Using cached chat member info for userId:', userId)
+        return cachedEntry.member
+    }
+
+    const member = await bot.api.getChatMember(channelId, userId)
+    chatMemberCache.set(cacheKey, { member, timestamp: now })
+    return member
+}
+
 module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
     let delay = (ms) => new Promise(reslv => setTimeout(reslv, ms))
@@ -38,49 +57,20 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
             if (payload.includes('marikiID-')) {
                 let ep_doc_id = payload.split('marikiID-')[1]
 
-                //check if joined sponsor in every 2 mins under 30 seconds
-                let d = new Date()
-                let mins = d.getMinutes()
-                let secs = d.getSeconds()
-                if (mins % 2 == 0) {
-                    let member = await bot.api.getChatMember(dt.aliProducts, ctx.chat.id)
-                    if (member.status == 'left') {
-                        let inv_db = await inviteModel.findOne().sort('-createdAt')
-                        let sp_ch = inv_db?.link
-                        await ctx.reply(`⚠ You didn't join our notifications channel. \n\nTo get this episode please join the channel through the link below and then click <b>✅ Done</b> button to proceed.\n\n<b>🔗 Join the Channel: 👇\n${sp_ch}\n${sp_ch}</b>\n\n•••`, {
-                            parse_mode: 'HTML',
-                            link_preview_options: { is_disabled: true },
-                            reply_markup: { inline_keyboard: [[{ text: '✅ Done (Joined)', url: `https://t.me/dramastorebot?start=marikiID-${ep_doc_id}` }]] }
-                        })
-                    } else {
-                        //find the document
-                        let ep_doc = await episodesModel.findById(ep_doc_id)
-
-                        let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Here 👇</code>`
-                        let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
-
-                        //reply with episodes info
-                        let conf_msg = await ctx.reply(txt, {
-                            parse_mode: 'HTML',
-                            protect_content: true,
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        { text: "⬇ OPEN DOWNLOAD PAGE", url }
-                                    ]
-                                ]
-                            }
-                        })
-
-                        //upadate drama count & user
-                        UpdateChanUser(ctx, ep_doc, conf_msg.message_id)
-                    }
+                let member = await getChatMemberCached(bot, dt.aliProducts, ctx.chat.id)
+                if (member.status == 'left') {
+                    let inv_db = await inviteModel.findOne().sort('-createdAt')
+                    let sp_ch = inv_db?.link
+                    await ctx.reply(`⚠ Please join our notifications channel to continue. \n\nTap the link below to JOIN, then click <b>✅ Joined</b> button to unlock this episode.\n\n<b>🔗 Join: 👇\n${sp_ch}</b>`, {
+                        parse_mode: 'HTML',
+                        link_preview_options: { is_disabled: true },
+                        reply_markup: { inline_keyboard: [[{ text: '✅ JOINED', url: `https://t.me/dramastorebot?start=marikiID-${ep_doc_id}` }]] }
+                    })
                 } else {
-                    //if not in specified time
                     //find the document
                     let ep_doc = await episodesModel.findById(ep_doc_id)
 
-                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page and receive the episode file.\n\n<code>Here 👇</code>`
+                    let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${ep_doc.drama_name} ➜ Episode ${ep_doc.epno}.</b> Please click and open the button below to go to the download page to get the episode file.\n\n<code>Here 👇</code>`
                     let url = `http://dramastore.net/download/episode?ep_id=${ep_doc._id}&userid=${ctx.chat.id}`
 
                     //reply with episodes info
@@ -109,7 +99,7 @@ module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
 
                 if(!movie) return ctx.reply('This movie is not found. Contact @shemdoe for assistance.')
 
-                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}.</b> Please click and open the button below to go to the download page and receive the movie file.\n\n<code>Here 👇</code>`
+                let txt = `<b>🤖 <u>Confirm download:</u></b>\n\nYou are downloading \n<b>${movie.movie_name}.</b> Please click and open the button below to go to the download page to get the movie file.\n\n<code>Here 👇</code>`
                 let url = `http://dramastore.net/download/episode?ep_id=${movie._id}--movie&userid=${ctx.chat.id}`
 
                 //reply with episodes info
