@@ -13,16 +13,16 @@ const chatMemberCache = new Map()
 const getChatMemberCached = async (bot, channelId, userId) => {
     const cachedEntry = chatMemberCache.get(userId)
     if (cachedEntry && Date.now() - cachedEntry.timestamp < CHAT_MEMBER_CACHE_TTL) {
-        return cachedEntry.member
+        return { status: cachedEntry.status }
     }
 
     const member = await bot.api.getChatMember(channelId, userId)
 
     if (member?.status !== 'left') {
-        chatMemberCache.set(userId, { member, timestamp: Date.now() })
+        chatMemberCache.set(userId, { status: member.status, timestamp: Date.now() })
     }
 
-    return member
+    return { status: member?.status }
 }
 
 module.exports = async (bot, ctx, dt, anyErr, trendingRateLimit) => {
