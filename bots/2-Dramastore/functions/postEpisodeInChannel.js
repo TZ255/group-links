@@ -86,6 +86,12 @@ module.exports = async (bot, ctx, next, dt, anyErr, delay, InputFile) => {
                             cname = cname.split('[Eng sub] ')[1].trim()
                         }
 
+                        let drama = await vueNewDramaModel.findOne({ newDramaName: cname })
+                        if (!drama) return await ctx.reply(`Drama with name ${cname} not found in database.`);
+
+                        //update episodes with new chan_id
+                        await episodesModel.updateMany({ drama_chan_id: drama.chan_id }, { $set: { drama_chan_id: chan_id } })
+                        // update drama with new chan_id and tgChannel
                         let up = await vueNewDramaModel.findOneAndUpdate({ newDramaName: cname }, { $set: { chan_id, tgChannel } }, { new: true })
                         let did = await ctx.reply(`drama updated with ${up.chan_id} and ${tgChannel} as link`)
                         await delay(500)
